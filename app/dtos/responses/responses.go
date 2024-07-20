@@ -1,11 +1,16 @@
 package dtos
 
 import (
-	"github.com/djfemz/savannahTechTask/app/models"
 	"time"
 )
 
 type CommitResponse struct {
+	ID          uint `gorm:"primaryKey"`
+	Message     string
+	Author      string
+	AuthorEmail string
+	Date        time.Time
+	URL         string
 }
 
 type GitHubCommitResponse struct {
@@ -50,8 +55,4 @@ type GitHubCommitResponse struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"author"`
-}
-
-func NewCommitResponse(commit *models.Commit) *CommitResponse {
-	return nil
 }
