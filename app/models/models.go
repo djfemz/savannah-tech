@@ -2,11 +2,12 @@ package models
 
 import (
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
+	"gorm.io/gorm"
 	"time"
 )
 
 type Commit struct {
-	ID         uint   `gorm:"primaryKey"`
+	*gorm.Model
 	CommitHash string `gorm:"unique"`
 	Message    string
 	Author     *Author `gorm:"foreignKey:CommitID"`
@@ -15,7 +16,7 @@ type Commit struct {
 }
 
 type Author struct {
-	ID       uint `gorm:"primaryKey"`
+	*gorm.Model
 	CommitID uint
 	Name     string
 	Email    string

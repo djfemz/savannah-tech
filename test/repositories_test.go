@@ -16,6 +16,7 @@ func init() {
 	}
 }
 
+// TODO: Mock the database
 func TestDatabaseConnection(t *testing.T) {
 	db, err := repositories.ConnectToDatabase()
 	assert.Nil(t, err)

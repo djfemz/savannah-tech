@@ -8,6 +8,7 @@ import (
 	"github.com/djfemz/savannahTechTask/app/services"
 )
 
+// TODO: replace real database instance with mock instance
 func TestFetchCommitDataForRepository(t *testing.T) {
 	db, _ := repositories.ConnectToDatabase()
 	commitRepository := repositories.NewCommitRepository(db)

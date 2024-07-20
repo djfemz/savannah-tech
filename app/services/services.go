@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type CommitService struct {
@@ -20,6 +21,7 @@ func NewCommitService(repository *repositories.CommitRepository) *CommitService 
 	}
 }
 
+// TODO: Add Caching Strategies
 func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitResponse, err error) {
 	var commits []*models.Commit
 	if err = commitService.repository.Find(&commits).Error; err != nil {
@@ -30,24 +32,34 @@ func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitRes
 }
 
 func FetchCommits() {
+	var commits []*models.Commit
+	var githubUserCommits []*dtos.GitHubCommitResponse
+	var commit = &models.Commit{}
+	var err error
 	db, err := repositories.ConnectToDatabase()
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
 	}
+	db.Order("date desc").First(commit)
+	githubUserCommits, err = getCommits(commit)
+	commits = mapToCommits(githubUserCommits)
 	commitRepository := repositories.NewCommitRepository(db)
-	commits, err := getCommits()
-	usersCommits := mapToCommits(commits)
-	log.Println("users commits: ", usersCommits)
-	if err = commitRepository.Create(&usersCommits).Error; err != nil {
-		log.Println("Error adding commits to database: ", err)
+	if err = commitRepository.Create(&commits).Error; err != nil {
+		log.Println("Error adding githubUserCommits to database: ", err)
 		return
 	}
 }
 
-func getCommits() (commits []*dtos.GitHubCommitResponse, err error) {
+func getCommits(commit *models.Commit) (commits []*dtos.GitHubCommitResponse, err error) {
 	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), nil)
 	if err != nil {
-		log.Fatal("Error creating request: ", err)
+		log.Println("Error creating request: ", err)
+	}
+	if commit != nil {
+		since := commit.Date.Add(1*time.Minute).Add(1*time.Nanosecond).Format(time.RFC3339) + "Z"
+		query := req.URL.Query()
+		query.Add("since", since)
+		req.URL.RawQuery = query.Encode()
 	}
 	client := &http.Client{}
 	jsonResponse, err := client.Do(req)

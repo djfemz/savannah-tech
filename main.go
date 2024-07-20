@@ -15,6 +15,7 @@ func init() {
 }
 
 func main() {
+	//TODO: add channels to communicate
 	go startJob()
 }
 
