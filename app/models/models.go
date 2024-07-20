@@ -6,11 +6,12 @@ import (
 )
 
 type Commit struct {
-	ID      uint `gorm:"primaryKey"`
-	Message string
-	Author  *Author `gorm:"foreignKey:CommitID"`
-	Date    time.Time
-	URL     string
+	ID         uint   `gorm:"primaryKey"`
+	CommitHash string `gorm:"unique"`
+	Message    string
+	Author     *Author `gorm:"foreignKey:CommitID"`
+	Date       time.Time
+	URL        string
 }
 
 type Author struct {
@@ -23,9 +24,10 @@ type Author struct {
 
 func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse) *Commit {
 	return &Commit{
-		Message: response.RepoCommit.Message,
-		URL:     response.RepoCommit.URL,
-		Date:    response.RepoCommit.Committer.Date,
+		CommitHash: response.Sha,
+		Message:    response.RepoCommit.Message,
+		URL:        response.RepoCommit.URL,
+		Date:       response.RepoCommit.Committer.Date,
 		Author: &Author{
 			Name:  response.RepoCommit.Author.Name,
 			Email: response.RepoCommit.Author.Email,

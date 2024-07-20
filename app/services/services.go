@@ -25,7 +25,6 @@ func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitRes
 	if err = commitService.repository.Find(&commits).Error; err != nil {
 		log.Println("error fetching commits: ", err)
 	}
-	log.Println("commits in get all: ", commits)
 	responses = mapToCommitResponses(commits)
 	return responses, err
 }
@@ -38,13 +37,11 @@ func FetchCommits() {
 	commitRepository := repositories.NewCommitRepository(db)
 	commits, err := getCommits()
 	usersCommits := mapToCommits(commits)
-	for _, commit := range usersCommits {
-		if err = commitRepository.Create(&commit).Error; err != nil {
-			log.Println("Error adding commits to database: ", err)
-			return
-		}
+	log.Println("users commits: ", usersCommits)
+	if err = commitRepository.Create(&usersCommits).Error; err != nil {
+		log.Println("Error adding commits to database: ", err)
+		return
 	}
-
 }
 
 func getCommits() (commits []*dtos.GitHubCommitResponse, err error) {
@@ -65,7 +62,7 @@ func getCommits() (commits []*dtos.GitHubCommitResponse, err error) {
 }
 
 func mapToCommits(commits []*dtos.GitHubCommitResponse) []*models.Commit {
-	var usersCommits = make([]*models.Commit, 5)
+	var usersCommits = make([]*models.Commit, 0)
 	for _, commit := range commits {
 		userCommit := models.NewCommitFromGithubCommitResponse(commit)
 		usersCommits = append(usersCommits, userCommit)
@@ -74,7 +71,7 @@ func mapToCommits(commits []*dtos.GitHubCommitResponse) []*models.Commit {
 }
 
 func mapToCommitResponses(commits []*models.Commit) []*dtos.CommitResponse {
-	var usersCommits = make([]*dtos.CommitResponse, 5)
+	var usersCommits = make([]*dtos.CommitResponse, 0)
 	for _, commit := range commits {
 		userCommit := models.NewCommitResponse(commit)
 		usersCommits = append(usersCommits, userCommit)

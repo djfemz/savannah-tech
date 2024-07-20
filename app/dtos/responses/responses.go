@@ -5,12 +5,12 @@ import (
 )
 
 type CommitResponse struct {
-	ID          uint `gorm:"primaryKey"`
-	Message     string
-	Author      string
-	AuthorEmail string
-	Date        time.Time
-	URL         string
+	ID          uint      `json:"id"`
+	Message     string    `json:"message"`
+	Author      string    `json:"author"`
+	AuthorEmail string    `json:"author_email"`
+	Date        time.Time `json:"date"`
+	URL         string    `json:"url"`
 }
 
 type GitHubCommitResponse struct {
