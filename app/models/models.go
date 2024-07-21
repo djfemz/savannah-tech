@@ -3,11 +3,13 @@ package models
 import (
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
 	"gorm.io/gorm"
+	"os"
 	"time"
 )
 
 type Commit struct {
 	*gorm.Model
+	RepoName   string
 	CommitHash string `gorm:"unique"`
 	Message    string
 	Author     *Author `gorm:"foreignKey:CommitID"`
@@ -39,6 +41,7 @@ type AppRepository struct {
 
 func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse) *Commit {
 	return &Commit{
+		RepoName:   os.Getenv("REPO_NAME"),
 		CommitHash: response.Sha,
 		Message:    response.RepoCommit.Message,
 		URL:        response.RepoCommit.URL,
