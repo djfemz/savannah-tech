@@ -14,8 +14,16 @@ type CommitRepository struct {
 	*gorm.DB
 }
 
+type AppRepoRepository struct {
+	*gorm.DB
+}
+
 func NewCommitRepository(db *gorm.DB) *CommitRepository {
 	return &CommitRepository{db}
+}
+
+func NewGithubRepoRepository(db *gorm.DB) *AppRepoRepository {
+	return &AppRepoRepository{db}
 }
 
 func ConnectToDatabase() (*gorm.DB, error) {
@@ -30,7 +38,7 @@ func ConnectToDatabase() (*gorm.DB, error) {
 	if err != nil {
 		log.Fatal("error connecting to database", err)
 	}
-	err = db.AutoMigrate(&models.Commit{}, &models.Author{})
+	err = db.AutoMigrate(&models.Commit{}, &models.Author{}, &models.AppRepository{})
 	if err != nil {
 		log.Fatal("error migrating: ", err)
 	}

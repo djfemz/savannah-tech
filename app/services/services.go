@@ -31,6 +31,15 @@ func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitRes
 	return responses, err
 }
 
+func (commitService *CommitService) GetCommitsByDateSince(since time.Time) (response []*dtos.CommitResponse, err error) {
+	commits := make([]*models.Commit, 0)
+	err = commitService.repository.Where("date BETWEEN ? AND ?", since, time.Now()).Find(&commits).Error
+	if err != nil {
+		return nil, err
+	}
+	return mapToCommitResponses(commits), err
+}
+
 func FetchCommits() {
 	var commits []*models.Commit
 	var githubUserCommits []*dtos.GitHubCommitResponse
