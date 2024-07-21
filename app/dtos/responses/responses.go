@@ -173,11 +173,11 @@ type Author struct {
 }
 
 type AuthorResponse struct {
-	ID          uint   `json:"id"`
-	Username    string `json:"username"`
-	Name        string `json:"name"`
-	Email       string `json:"email"`
-	CommitCount uint   `json:"commit_count"`
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Commits  uint   `json:"commit_count"`
 }
 
 type GitHubCommitResponse struct {

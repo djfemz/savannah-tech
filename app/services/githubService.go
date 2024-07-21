@@ -3,10 +3,11 @@ package services
 import (
 	"encoding/json"
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
+	"github.com/djfemz/savannahTechTask/app/mappers"
 	"github.com/djfemz/savannahTechTask/app/models"
+	"github.com/djfemz/savannahTechTask/app/utils"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -30,18 +31,17 @@ func (githubService *GithubService) FetchCommits() (githubUserCommits []*dtos.Gi
 	if err != nil {
 		return nil, err
 	}
-	commits = mapToCommits(githubUserCommits)
-	if err = githubService.repository.SaveAll(&commits); err != nil {
+	commits = mappers.MapToCommits(githubUserCommits)
+	if err = githubService.repository.SaveAll(commits); err != nil {
 		log.Println("Error adding githubUserCommits to database: ", err)
 		return nil, err
 	}
 	return githubUserCommits, nil
 }
 
-// TODO: remove hardcoded env variables
 func (githubService *GithubService) FetchRepositoryMetaData() {
 	repository := dtos.NewGithubRepositoryResponse()
-	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_REPOSITORY_URL"), nil)
+	req, err := http.NewRequest(http.MethodGet, utils.GITHUB_REPOSITORY_URL, nil)
 	if err != nil {
 		log.Println("Error creating request: ", err)
 	}
@@ -55,7 +55,7 @@ func (githubService *GithubService) FetchRepositoryMetaData() {
 		log.Fatal("Error reading response: ", err)
 	}
 	appRepository := models.NewGithubAuxiliaryRepository(repository)
-	repoName := os.Getenv("REPO_NAME")
+	repoName := utils.GITHUB_REPOSITORY_NAME
 	isExistingRepo, _ := githubService.ExistsByName(repoName)
 	if isExistingRepo {
 		repo, _ := githubService.UpdateByName(repoName, appRepository)
@@ -69,7 +69,7 @@ func (githubService *GithubService) FetchRepositoryMetaData() {
 }
 
 func getCommits(commit *models.Commit) (commits []*dtos.GitHubCommitResponse, err error) {
-	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), nil)
+	req, err := http.NewRequest(http.MethodGet, utils.GITHUB_COMMIT_URL, nil)
 	if err != nil {
 		log.Println("Error creating request: ", err)
 	}
@@ -91,7 +91,7 @@ func getCommits(commit *models.Commit) (commits []*dtos.GitHubCommitResponse, er
 }
 
 func addQueryParamToRequest(commit *models.Commit, req *http.Request) {
-	since := commit.Date.Add(1*time.Minute).Add(1*time.Nanosecond).Format(time.RFC3339) + "Z"
+	since := commit.Date.Add(1*time.Minute).Add(1*time.Nanosecond).Format(time.RFC3339) + utils.RFC_TIME_SUFFIX
 	query := req.URL.Query()
 	query.Add("since", since)
 	req.URL.RawQuery = query.Encode()

@@ -13,21 +13,20 @@ type Commit struct {
 	RepoName   string
 	CommitHash string `gorm:"unique"`
 	Message    string
-	Author     *Author `gorm:"foreignKey:CommitID"`
+	Author     *Author
 	Date       time.Time
 	URL        string
-	AuthorID   uint
 }
 
 type Author struct {
 	ID uint
 	*gorm.Model
-	Commits     []*Commit
-	Username    string
-	Name        string
-	Email       string
-	Date        time.Time
-	CommitCount uint
+	Username string
+	Name     string
+	Email    string
+	CommitID uint
+	Date     time.Time
+	Commits  uint
 }
 
 type GithubAuxiliaryRepository struct {
@@ -108,10 +107,10 @@ func NewRepositoryResponse(appRepository *GithubAuxiliaryRepository) *dtos.Repos
 
 func NewAuthorResponse(author *Author) *dtos.AuthorResponse {
 	return &dtos.AuthorResponse{
-		ID:          author.ID,
-		Username:    author.Username,
-		Name:        author.Name,
-		Email:       author.Email,
-		CommitCount: author.CommitCount,
+		ID:       author.ID,
+		Username: author.Username,
+		Name:     author.Name,
+		Email:    author.Email,
+		Commits:  author.Commits,
 	}
 }

@@ -176,11 +176,11 @@ func (_m *CommitRepository) Save(commit *models.Commit) (*models.Commit, error) 
 }
 
 // SaveAll provides a mock function with given fields: commits
-func (_m *CommitRepository) SaveAll(commits *[]*models.Commit) error {
+func (_m *CommitRepository) SaveAll(commits []*models.Commit) error {
 	ret := _m.Called(commits)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*[]*models.Commit) error); ok {
+	if rf, ok := ret.Get(0).(func([]*models.Commit) error); ok {
 		r0 = rf(commits)
 	} else {
 		r0 = ret.Error(0)

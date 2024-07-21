@@ -2,6 +2,7 @@ package services
 
 import (
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
+	"github.com/djfemz/savannahTechTask/app/mappers"
 	"github.com/djfemz/savannahTechTask/app/models"
 	"github.com/djfemz/savannahTechTask/app/repositories"
 	"time"
@@ -23,7 +24,7 @@ func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitRes
 	if err != nil {
 		return nil, err
 	}
-	responses = mapToCommitResponses(commits)
+	responses = mappers.MapToCommitResponses(commits)
 	return responses, err
 }
 
@@ -32,7 +33,7 @@ func (commitService *CommitService) GetCommitsByDateSince(since time.Time) (resp
 	if err != nil {
 		return nil, err
 	}
-	return mapToCommitResponses(commits), err
+	return mappers.MapToCommitResponses(commits), err
 }
 
 func (commitService *CommitService) GetMostRecentCommit() (*models.Commit, error) {
@@ -53,7 +54,7 @@ func (commitService *CommitService) GetCommitsForRepo(repoName string) ([]*dtos.
 	if err != nil {
 		return nil, err
 	}
-	commitRes := mapToCommitResponses(commits)
+	commitRes := mappers.MapToCommitResponses(commits)
 	return commitRes, nil
 }
 
@@ -64,23 +65,4 @@ func mapToAuthorResponse(authors []*models.Author) []*dtos.AuthorResponse {
 	}
 	return authorRes
 
-}
-
-// TODO:Move mappers to its own package
-func mapToCommits(commits []*dtos.GitHubCommitResponse) []*models.Commit {
-	var usersCommits = make([]*models.Commit, 0)
-	for _, commit := range commits {
-		userCommit := models.NewCommitFromGithubCommitResponse(commit)
-		usersCommits = append(usersCommits, userCommit)
-	}
-	return usersCommits
-}
-
-func mapToCommitResponses(commits []*models.Commit) []*dtos.CommitResponse {
-	var usersCommits = make([]*dtos.CommitResponse, 0)
-	for _, commit := range commits {
-		userCommit := models.NewCommitResponse(commit)
-		usersCommits = append(usersCommits, userCommit)
-	}
-	return usersCommits
 }

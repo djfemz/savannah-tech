@@ -50,7 +50,7 @@ func TestGetCommitsByDateSince(t *testing.T) {
 func TestGetMostRecentCommit(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
 	commitRepository.On("FindMostRecentCommit", mock.Anything).Return(
-		testAuthors, nil)
+		testCommits[0], nil)
 	commitService := services.NewCommitService(commitRepository)
 	commit, err := commitService.GetMostRecentCommit()
 	assert.NotNil(t, commit)
