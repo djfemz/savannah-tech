@@ -1,13 +1,9 @@
 package services
 
 import (
-	"encoding/json"
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
 	"github.com/djfemz/savannahTechTask/app/models"
 	"github.com/djfemz/savannahTechTask/app/repositories"
-	"log"
-	"net/http"
-	"os"
 	"time"
 )
 
@@ -37,48 +33,6 @@ func (commitService *CommitService) GetCommitsByDateSince(since time.Time) (resp
 		return nil, err
 	}
 	return mapToCommitResponses(commits), err
-}
-
-func FetchCommits() {
-	var commits []*models.Commit
-	var githubUserCommits []*dtos.GitHubCommitResponse
-	var commit = &models.Commit{}
-	var err error
-	db, err := repositories.ConnectToDatabase()
-	if err != nil {
-		log.Println("Error connecting to database: ", err)
-	}
-	db.Order("date desc").First(commit)
-	githubUserCommits, err = getCommits(commit)
-	commits = mapToCommits(githubUserCommits)
-	commitRepository := repositories.NewCommitRepository(db)
-	if err = commitRepository.SaveAll(&commits); err != nil {
-		log.Println("Error adding githubUserCommits to database: ", err)
-		return
-	}
-}
-
-func getCommits(commit *models.Commit) (commits []*dtos.GitHubCommitResponse, err error) {
-	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), nil)
-	if err != nil {
-		log.Println("Error creating request: ", err)
-	}
-	if commit != nil {
-		since := commit.Date.Add(1*time.Minute).Add(1*time.Nanosecond).Format(time.RFC3339) + "Z"
-		query := req.URL.Query()
-		query.Add("since", since)
-		req.URL.RawQuery = query.Encode()
-	}
-	client := &http.Client{}
-	jsonResponse, err := client.Do(req)
-	if err != nil {
-		log.Fatal("Error sending request: ", err)
-	}
-	err = json.NewDecoder(jsonResponse.Body).Decode(&commits)
-	if err != nil {
-		log.Fatal("Error reading response: ", err)
-	}
-	return commits, err
 }
 
 func mapToCommits(commits []*dtos.GitHubCommitResponse) []*models.Commit {

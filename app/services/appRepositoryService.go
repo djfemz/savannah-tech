@@ -10,15 +10,15 @@ import (
 	"os"
 )
 
-type AppRepositoryService struct {
+type GithubRepositoryService struct {
 	repositories.GithubAuxiliaryRepository
 }
 
-func NewGithubRepoService(appRepoRepository repositories.GithubAuxiliaryRepository) *AppRepositoryService {
-	return &AppRepositoryService{appRepoRepository}
+func NewGithubRepoService(appRepoRepository repositories.GithubAuxiliaryRepository) *GithubRepositoryService {
+	return &GithubRepositoryService{appRepoRepository}
 }
 
-func (appRepositoryService *AppRepositoryService) FetchRepositoryMetaData() {
+func (appRepositoryService *GithubRepositoryService) FetchRepositoryMetaData() {
 	repository := dtos.NewGithubRepositoryResponse()
 	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_REPOSITORY_URL"), nil)
 	if err != nil {
@@ -40,7 +40,7 @@ func (appRepositoryService *AppRepositoryService) FetchRepositoryMetaData() {
 	}
 }
 
-func (appRepositoryService *AppRepositoryService) GetRepositoryBy(name string) (repository *dtos.RepositoryResponse, err error) {
+func (appRepositoryService *GithubRepositoryService) GetRepositoryBy(name string) (repository *dtos.RepositoryResponse, err error) {
 	appRepository, err := appRepositoryService.GithubAuxiliaryRepository.FindByName(name)
 	if err != nil {
 		return nil, err
