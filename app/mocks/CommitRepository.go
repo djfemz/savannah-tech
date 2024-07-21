@@ -83,6 +83,29 @@ func (_m *CommitRepository) FindById(id uint) (*models.Commit, error) {
 	return r0, r1
 }
 
+// FindCommitsForRepoByName provides a mock function with given fields: name
+func (_m *CommitRepository) FindCommitsForRepoByName(name string) ([]*models.Commit, error) {
+	ret := _m.Called(name)
+
+	var r0 []*models.Commit
+	if rf, ok := ret.Get(0).(func(string) []*models.Commit); ok {
+		r0 = rf(name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*models.Commit)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindMostRecentCommit provides a mock function with given fields:
 func (_m *CommitRepository) FindMostRecentCommit() (*models.Commit, error) {
 	ret := _m.Called()

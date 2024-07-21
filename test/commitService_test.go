@@ -69,5 +69,12 @@ func TestGetTopCommitAuthors(t *testing.T) {
 }
 
 func TestGetCommitsForRepository(t *testing.T) {
-
+	commitRepository := new(mocks.CommitRepository)
+	commitRepository.On("FindCommitsForRepoByName", mock.Anything).Return(
+		testCommits, nil,
+	)
+	commitService := services.NewCommitService(commitRepository)
+	commits, err := commitService.GetCommitsForRepo("shoppersDelight")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, commits)
 }

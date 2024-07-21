@@ -19,6 +19,7 @@ type CommitRepository interface {
 	SaveAll(commits *[]*models.Commit) error
 	FindMostRecentCommit() (*models.Commit, error)
 	FindTopCommitAuthors(size int) ([]*models.Author, error)
+	FindCommitsForRepoByName(name string) ([]*models.Commit, error)
 }
 
 type AppCommitRepository struct {
@@ -90,6 +91,14 @@ func (appCommitRepository *AppCommitRepository) FindTopCommitAuthors(size int) (
 		return nil, err
 	}
 	return authors, nil
+}
+
+func (appCommitRepository *AppCommitRepository) FindCommitsForRepoByName(name string) ([]*models.Commit, error) {
+	var commits []*models.Commit
+	if err := appCommitRepository.Find(&models.Commit{RepoName: name}).First(commits).Error; err != nil {
+		return nil, err
+	}
+	return commits, nil
 }
 
 func ConnectToDatabase() (*gorm.DB, error) {

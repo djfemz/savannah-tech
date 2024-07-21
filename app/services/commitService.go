@@ -48,6 +48,15 @@ func (commitService *CommitService) GetTopCommitAuthors(size int) ([]*dtos.Autho
 	return authorRes, nil
 }
 
+func (commitService *CommitService) GetCommitsForRepo(repoName string) ([]*dtos.CommitResponse, error) {
+	commits, err := commitService.repository.FindCommitsForRepoByName(repoName)
+	if err != nil {
+		return nil, err
+	}
+	commitRes := mapToCommitResponses(commits)
+	return commitRes, nil
+}
+
 func mapToAuthorResponse(authors []*models.Author) []*dtos.AuthorResponse {
 	authorRes := make([]*dtos.AuthorResponse, 0)
 	for _, author := range authors {
