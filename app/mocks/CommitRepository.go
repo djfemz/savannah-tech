@@ -106,6 +106,29 @@ func (_m *CommitRepository) FindMostRecentCommit() (*models.Commit, error) {
 	return r0, r1
 }
 
+// FindTopCommitAuthors provides a mock function with given fields: size
+func (_m *CommitRepository) FindTopCommitAuthors(size int) ([]*models.Author, error) {
+	ret := _m.Called(size)
+
+	var r0 []*models.Author
+	if rf, ok := ret.Get(0).(func(int) []*models.Author); ok {
+		r0 = rf(size)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*models.Author)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(size)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Save provides a mock function with given fields: commit
 func (_m *CommitRepository) Save(commit *models.Commit) (*models.Commit, error) {
 	ret := _m.Called(commit)

@@ -39,6 +39,25 @@ func (commitService *CommitService) GetMostRecentCommit() (*models.Commit, error
 	return commitService.repository.FindMostRecentCommit()
 }
 
+func (commitService *CommitService) GetTopCommitAuthors(size int) ([]*dtos.AuthorResponse, error) {
+	authors, err := commitService.repository.FindTopCommitAuthors(size)
+	if err != nil {
+		return nil, err
+	}
+	authorRes := mapToAuthorResponse(authors)
+	return authorRes, nil
+}
+
+func mapToAuthorResponse(authors []*models.Author) []*dtos.AuthorResponse {
+	authorRes := make([]*dtos.AuthorResponse, 0)
+	for _, author := range authors {
+		authorRes = append(authorRes, models.NewAuthorResponse(author))
+	}
+	return authorRes
+
+}
+
+// TODO:Move mappers to its own package
 func mapToCommits(commits []*dtos.GitHubCommitResponse) []*models.Commit {
 	var usersCommits = make([]*models.Commit, 0)
 	for _, commit := range commits {

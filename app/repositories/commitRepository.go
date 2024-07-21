@@ -18,6 +18,7 @@ type CommitRepository interface {
 	FindAll() ([]*models.Commit, error)
 	SaveAll(commits *[]*models.Commit) error
 	FindMostRecentCommit() (*models.Commit, error)
+	FindTopCommitAuthors(size int) ([]*models.Author, error)
 }
 
 type AppCommitRepository struct {
@@ -29,7 +30,15 @@ func NewCommitRepository(db *gorm.DB) CommitRepository {
 }
 
 func (appCommitRepository *AppCommitRepository) Save(commit *models.Commit) (*models.Commit, error) {
-	if err := appCommitRepository.Create(commit).Error; err != nil {
+	var author *models.Author
+	appCommitRepository.Where(&models.Author{Username: commit.Author.Username}).First(author)
+	if author != nil {
+		author.CommitCount = author.CommitCount + 1
+		author.Commits = append(author.Commits, commit)
+		commit.Author = author
+		commit.AuthorID = author.ID
+	}
+	if err := appCommitRepository.DB.Create(commit).Error; err != nil {
 		return nil, err
 	}
 	if err := appCommitRepository.Last(commit).Error; err != nil {
@@ -73,6 +82,14 @@ func (appCommitRepository *AppCommitRepository) SaveAll(commits *[]*models.Commi
 		return err
 	}
 	return nil
+}
+
+func (appCommitRepository *AppCommitRepository) FindTopCommitAuthors(size int) ([]*models.Author, error) {
+	var authors []*models.Author
+	if err := appCommitRepository.Model(&models.Author{}).Order("commit_count desc").Limit(size).Find(&authors).Error; err != nil {
+		return nil, err
+	}
+	return authors, nil
 }
 
 func ConnectToDatabase() (*gorm.DB, error) {

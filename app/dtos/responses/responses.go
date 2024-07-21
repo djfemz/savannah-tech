@@ -172,6 +172,14 @@ type Author struct {
 	SiteAdmin         bool   `json:"site_admin"`
 }
 
+type AuthorResponse struct {
+	ID          uint   `json:"id"`
+	Username    string `json:"username"`
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	CommitCount uint   `json:"commit_count"`
+}
+
 type GitHubCommitResponse struct {
 	Sha         string `json:"sha"`
 	NodeID      string `json:"node_id"`

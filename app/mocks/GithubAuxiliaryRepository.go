@@ -102,6 +102,29 @@ func (_m *GithubAuxiliaryRepository) Save(repository *models.GithubAuxiliaryRepo
 	return r0, r1
 }
 
+// UpdateByName provides a mock function with given fields: name, repository
+func (_m *GithubAuxiliaryRepository) UpdateByName(name string, repository *models.GithubAuxiliaryRepository) (*models.GithubAuxiliaryRepository, error) {
+	ret := _m.Called(name, repository)
+
+	var r0 *models.GithubAuxiliaryRepository
+	if rf, ok := ret.Get(0).(func(string, *models.GithubAuxiliaryRepository) *models.GithubAuxiliaryRepository); ok {
+		r0 = rf(name, repository)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.GithubAuxiliaryRepository)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string, *models.GithubAuxiliaryRepository) error); ok {
+		r1 = rf(name, repository)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 type mockConstructorTestingTNewGithubAuxiliaryRepository interface {
 	mock.TestingT
 	Cleanup(func())

@@ -17,10 +17,13 @@ var testGithubRepository = &models.GithubAuxiliaryRepository{
 }
 
 func TestFetchGithubRepositoryMetaData(t *testing.T) {
-	appRepository := mocks.NewGithubAuxiliaryRepository(t)
+	appRepository := new(mocks.GithubAuxiliaryRepository)
+	commitRepository := new(mocks.CommitRepository)
 	appRepository.On("Save", mock.Anything).Return(testGithubRepository, nil)
 	appRepository.On("FindByName", mock.Anything).Return(testGithubRepository, nil)
-	appRepositoryService := services.NewGithubRepoService(appRepository)
+	appRepository.On("ExistsByName", mock.Anything).Return(true, nil)
+	appRepository.On("UpdateByName", mock.Anything, mock.Anything).Return(testGithubRepository, nil)
+	appRepositoryService := services.NewGithubService(services.NewCommitService(commitRepository), services.NewGithubRepoService(appRepository))
 	githubRepoName := "shoppersDelight"
 	appRepositoryService.FetchRepositoryMetaData()
 	foundRepository, err := appRepositoryService.GetRepositoryBy(githubRepoName)

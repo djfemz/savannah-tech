@@ -14,6 +14,8 @@ import (
 var testCommits = []*models.Commit{{ID: 1, RepoName: "test repo", CommitHash: "abc123"},
 	{ID: 2, RepoName: "test repo 1", CommitHash: "abc1234"}}
 
+var testAuthors = []*models.Author{{ID: 1, Name: "author 1", Email: "john@email.com"}, {ID: 1, Name: "author 1", Email: "john@email.com"}, {ID: 1, Name: "author 1", Email: "john@email.com"}}
+
 func TestFetchCommitDataForRepository(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
 
@@ -48,10 +50,24 @@ func TestGetCommitsByDateSince(t *testing.T) {
 func TestGetMostRecentCommit(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
 	commitRepository.On("FindMostRecentCommit", mock.Anything).Return(
-		testCommits[0], nil,
-	)
+		testAuthors, nil)
 	commitService := services.NewCommitService(commitRepository)
 	commit, err := commitService.GetMostRecentCommit()
 	assert.NotNil(t, commit)
 	assert.Nil(t, err)
+}
+
+func TestGetTopCommitAuthors(t *testing.T) {
+	commitRepository := new(mocks.CommitRepository)
+	commitRepository.On("FindTopCommitAuthors", 3).Return(
+		testAuthors, nil,
+	)
+	commitService := services.NewCommitService(commitRepository)
+	authors, err := commitService.GetTopCommitAuthors(3)
+	assert.NotNil(t, authors)
+	assert.Nil(t, err)
+}
+
+func TestGetCommitsForRepository(t *testing.T) {
+
 }

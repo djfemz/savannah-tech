@@ -16,15 +16,18 @@ type Commit struct {
 	Author     *Author `gorm:"foreignKey:CommitID"`
 	Date       time.Time
 	URL        string
+	AuthorID   uint
 }
 
 type Author struct {
 	ID uint
 	*gorm.Model
-	CommitID uint
-	Name     string
-	Email    string
-	Date     time.Time
+	Commits     []*Commit
+	Username    string
+	Name        string
+	Email       string
+	Date        time.Time
+	CommitCount uint
 }
 
 type GithubAuxiliaryRepository struct {
@@ -50,8 +53,9 @@ func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse) *Com
 		URL:        response.RepoCommit.URL,
 		Date:       response.RepoCommit.Committer.Date,
 		Author: &Author{
-			Name:  response.RepoCommit.RepoAuthor.Name,
-			Email: response.RepoCommit.RepoAuthor.Email,
+			Name:     response.RepoCommit.RepoAuthor.Name,
+			Email:    response.RepoCommit.RepoAuthor.Email,
+			Username: response.Login,
 		},
 	}
 }
@@ -100,4 +104,14 @@ func NewRepositoryResponse(appRepository *GithubAuxiliaryRepository) *dtos.Repos
 		UpdatedDate:    appRepository.UpdatedDate,
 	}
 
+}
+
+func NewAuthorResponse(author *Author) *dtos.AuthorResponse {
+	return &dtos.AuthorResponse{
+		ID:          author.ID,
+		Username:    author.Username,
+		Name:        author.Name,
+		Email:       author.Email,
+		CommitCount: author.CommitCount,
+	}
 }

@@ -40,6 +40,11 @@ func TestFindLastCommitByDate(t *testing.T) {
 	assert.NotNil(t, commit)
 }
 
+func TestFindTopCommitAuthors(t *testing.T) {
+	commitRepository := new(mocks.CommitRepository)
+	commitRepository.On("FindMostRecentCommit").Return(testCommits[0], nil)
+}
+
 func TestAddSameCommitFails(t *testing.T) {
 	//db, err := repositories.ConnectToDatabase()
 	//assert.Nil(t, err)
