@@ -25,7 +25,7 @@ type Author struct {
 	Date     time.Time
 }
 
-type AppRepository struct {
+type GithubAuxiliaryRepository struct {
 	Name           string
 	Description    string
 	RepoId         uint `gorm:"unique"`
@@ -67,8 +67,8 @@ func NewCommitResponse(commit *Commit) (commitResponse *dtos.CommitResponse) {
 	return commitResponse
 }
 
-func NewAppRepository(response *dtos.GithubRepositoryResponse) *AppRepository {
-	return &AppRepository{
+func NewAppRepository(response *dtos.GithubRepositoryResponse) *GithubAuxiliaryRepository {
+	return &GithubAuxiliaryRepository{
 		Name:           response.Name,
 		Description:    response.Description,
 		URL:            response.URL,
@@ -82,7 +82,7 @@ func NewAppRepository(response *dtos.GithubRepositoryResponse) *AppRepository {
 	}
 }
 
-func NewRepositoryResponse(appRepository *AppRepository) *dtos.RepositoryResponse {
+func NewRepositoryResponse(appRepository *GithubAuxiliaryRepository) *dtos.RepositoryResponse {
 	return &dtos.RepositoryResponse{
 		Name:           appRepository.Name,
 		RepoId:         appRepository.RepoId,

@@ -11,7 +11,11 @@ import (
 )
 
 type AppRepositoryService struct {
-	*repositories.AppRepoRepository
+	repositories.GithubAuxiliaryRepository
+}
+
+func NewGithubRepoService(appRepoRepository repositories.GithubAuxiliaryRepository) *AppRepositoryService {
+	return &AppRepositoryService{appRepoRepository}
 }
 
 func (appRepositoryService *AppRepositoryService) FetchRepositoryMetaData() {
@@ -30,20 +34,16 @@ func (appRepositoryService *AppRepositoryService) FetchRepositoryMetaData() {
 		log.Fatal("Error reading response: ", err)
 	}
 	appRepository := models.NewAppRepository(repository)
-	if err = appRepositoryService.AppRepoRepository.Create(appRepository).Error; err != nil {
+	_, err = appRepositoryService.GithubAuxiliaryRepository.Save(appRepository)
+	if err != nil {
 		log.Println("Error saving repository: ", err)
 	}
 }
 
-func (appRepositoryService *AppRepositoryService) GetRepository(name string) (repository *dtos.RepositoryResponse, err error) {
-	appRepository := &models.AppRepository{}
-	err = appRepositoryService.AppRepoRepository.Where(&models.AppRepository{Name: name}).Find(appRepository).Error
+func (appRepositoryService *AppRepositoryService) GetRepositoryBy(name string) (repository *dtos.RepositoryResponse, err error) {
+	appRepository, err := appRepositoryService.GithubAuxiliaryRepository.FindByName(name)
 	if err != nil {
 		return nil, err
 	}
 	return models.NewRepositoryResponse(appRepository), nil
-}
-
-func NewGithubRepoService(appRepoRepository *repositories.AppRepoRepository) *AppRepositoryService {
-	return &AppRepositoryService{appRepoRepository}
 }

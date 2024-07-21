@@ -12,10 +12,10 @@ import (
 )
 
 type CommitService struct {
-	repository *repositories.CommitRepository
+	repository repositories.CommitRepository
 }
 
-func NewCommitService(repository *repositories.CommitRepository) *CommitService {
+func NewCommitService(repository repositories.CommitRepository) *CommitService {
 	return &CommitService{
 		repository: repository,
 	}
@@ -23,17 +23,16 @@ func NewCommitService(repository *repositories.CommitRepository) *CommitService 
 
 // TODO: Add Caching Strategies
 func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitResponse, err error) {
-	var commits []*models.Commit
-	if err = commitService.repository.Find(&commits).Error; err != nil {
-		log.Println("error fetching commits: ", err)
+	commits, err := commitService.repository.FindAll()
+	if err != nil {
+		return nil, err
 	}
 	responses = mapToCommitResponses(commits)
 	return responses, err
 }
 
 func (commitService *CommitService) GetCommitsByDateSince(since time.Time) (response []*dtos.CommitResponse, err error) {
-	commits := make([]*models.Commit, 0)
-	err = commitService.repository.Where("date BETWEEN ? AND ?", since, time.Now()).Find(&commits).Error
+	commits, err := commitService.repository.FindAllByDateSince(&since)
 	if err != nil {
 		return nil, err
 	}
@@ -47,13 +46,13 @@ func FetchCommits() {
 	var err error
 	db, err := repositories.ConnectToDatabase()
 	if err != nil {
-		log.Fatal("Error connecting to database: ", err)
+		log.Println("Error connecting to database: ", err)
 	}
 	db.Order("date desc").First(commit)
 	githubUserCommits, err = getCommits(commit)
 	commits = mapToCommits(githubUserCommits)
 	commitRepository := repositories.NewCommitRepository(db)
-	if err = commitRepository.Create(&commits).Error; err != nil {
+	if err = commitRepository.SaveAll(&commits); err != nil {
 		log.Println("Error adding githubUserCommits to database: ", err)
 		return
 	}

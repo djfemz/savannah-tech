@@ -14,17 +14,17 @@ type CommitResponse struct {
 }
 
 type RepositoryResponse struct {
-	Name           string
-	RepoId         uint
-	Description    string
-	URL            string
-	Language       string
-	ForkCount      int
-	StarCount      int
-	OpenIssueCount int
-	WatcherCount   int
-	DateCreated    time.Time
-	UpdatedDate    time.Time
+	Name           string    `json:"name"`
+	RepoId         uint      `json:"-"`
+	Description    string    `json:"description"`
+	URL            string    `json:"url"`
+	Language       string    `json:"language"`
+	ForkCount      int       `json:"forks_count"`
+	StarCount      int       `json:"stars_count"`
+	OpenIssueCount int       `json:"open_issues_count"`
+	WatcherCount   int       `json:"watchers_count"`
+	DateCreated    time.Time `json:"created_at"`
+	UpdatedDate    time.Time `json:"updated_at"`
 }
 
 type GithubRepositoryResponse struct {

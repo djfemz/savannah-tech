@@ -9,11 +9,11 @@ import (
 
 func TestFetchGithubRepositoryMetaData(t *testing.T) {
 	db, _ := repositories.ConnectToDatabase()
-	appRepository := repositories.NewGithubRepoRepository(db)
+	appRepository := repositories.NewGithubAuxiliaryRepository(db)
 	appRepositoryService := services.NewGithubRepoService(appRepository)
 	githubRepoName := "shoppersDelight"
 	appRepositoryService.FetchRepositoryMetaData()
-	foundRepository, err := appRepositoryService.GetRepository(githubRepoName)
+	foundRepository, err := appRepositoryService.GetRepositoryBy(githubRepoName)
 	assert.Nil(t, err)
 	assert.NotNil(t, foundRepository)
 }
