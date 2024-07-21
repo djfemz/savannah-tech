@@ -8,6 +8,7 @@ import (
 )
 
 type Commit struct {
+	ID uint `gorm:"primaryKey"`
 	*gorm.Model
 	RepoName   string
 	CommitHash string `gorm:"unique"`
@@ -18,6 +19,7 @@ type Commit struct {
 }
 
 type Author struct {
+	ID uint
 	*gorm.Model
 	CommitID uint
 	Name     string
@@ -26,6 +28,7 @@ type Author struct {
 }
 
 type GithubAuxiliaryRepository struct {
+	ID             uint
 	Name           string
 	Description    string
 	RepoId         uint `gorm:"unique"`
