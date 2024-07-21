@@ -24,6 +24,7 @@ func main() {
 	go startJob()
 	router := gin.Default()
 	router.GET("/api/v1/commits", commitController.GetTopCommitAuthors)
+	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
 	err := router.Run(":8080")
 	if err != nil {
 		log.Fatal("Failed to start server on port: ", 8080)

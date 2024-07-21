@@ -6,11 +6,11 @@ import (
 
 type CommitResponse struct {
 	ID          uint      `json:"id"`
-	Message     string    `json:"message"`
-	Author      string    `json:"author"`
-	AuthorEmail string    `json:"author_email"`
-	Date        time.Time `json:"date"`
-	URL         string    `json:"url"`
+	Message     string    `json:"message,omitempty,-"`
+	Author      string    `json:"author,omitempty,-"`
+	AuthorEmail string    `json:"author_email,omitempty,-"`
+	Date        time.Time `json:"date,omitempty,-"`
+	URL         string    `json:"url,omitempty,-"`
 }
 
 type RepositoryResponse struct {
@@ -132,9 +132,9 @@ type GithubRepositoryResponse struct {
 }
 
 type RepoAuthor struct {
-	Name  string    `json:"name"`
-	Email string    `json:"email"`
-	Date  time.Time `json:"date"`
+	Name  string    `json:"name,omitempty,-"`
+	Email string    `json:"email,omitempty,-"`
+	Date  time.Time `json:"date,omitempty,-"`
 }
 
 type RepoCommit struct {
@@ -173,11 +173,9 @@ type Author struct {
 }
 
 type AuthorResponse struct {
-	ID       uint   `json:"id"`
-	Username string `json:"username"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Commits  uint   `json:"commit_count"`
+	Username string `json:"username,omitempty,-"`
+	Email    string `json:"email,omitempty,-"`
+	Commits  uint   `json:"commit_count,omitempty,-"`
 }
 
 type GitHubCommitResponse struct {

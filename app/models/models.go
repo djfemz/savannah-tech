@@ -107,9 +107,7 @@ func NewRepositoryResponse(appRepository *GithubAuxiliaryRepository) *dtos.Repos
 
 func NewAuthorResponse(author *Author) *dtos.AuthorResponse {
 	return &dtos.AuthorResponse{
-		ID:       author.ID,
 		Username: author.Username,
-		Name:     author.Name,
 		Email:    author.Email,
 		Commits:  author.Commits,
 	}
