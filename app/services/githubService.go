@@ -22,21 +22,49 @@ func NewGithubService(commitService *CommitService, repositoryService *GithubRep
 	}
 }
 
-func (githubService *GithubService) FetchCommits() {
+func (githubService *GithubService) FetchCommits() (githubUserCommits []*dtos.GitHubCommitResponse, err error) {
 	var commits []*models.Commit
-	var githubUserCommits []*dtos.GitHubCommitResponse
 	var commit = &models.Commit{}
-	var err error
-	if err != nil {
-		log.Println("Error connecting to database: ", err)
-	}
-	//TODO: implement a get latest commit --> db.Order("date desc").First(commit)
+	commit, _ = githubService.GetMostRecentCommit()
 	githubUserCommits, err = getCommits(commit)
+	if err != nil {
+		return nil, err
+	}
 	commits = mapToCommits(githubUserCommits)
-
 	if err = githubService.repository.SaveAll(&commits); err != nil {
 		log.Println("Error adding githubUserCommits to database: ", err)
+		return nil, err
+	}
+	return githubUserCommits, nil
+}
+
+// TODO: remove hardcoded env variables
+func (githubService *GithubService) FetchRepositoryMetaData() {
+	repository := dtos.NewGithubRepositoryResponse()
+	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_REPOSITORY_URL"), nil)
+	if err != nil {
+		log.Println("Error creating request: ", err)
+	}
+	client := &http.Client{}
+	jsonResponse, err := client.Do(req)
+	if err != nil {
+		log.Fatal("Error sending request: ", err)
+	}
+	err = json.NewDecoder(jsonResponse.Body).Decode(repository)
+	if err != nil {
+		log.Fatal("Error reading response: ", err)
+	}
+	appRepository := models.NewGithubAuxiliaryRepository(repository)
+	repoName := os.Getenv("REPO_NAME")
+	isExistingRepo, _ := githubService.ExistsByName(repoName)
+	if isExistingRepo {
+		repo, _ := githubService.UpdateByName(repoName, appRepository)
+		log.Println("repository updated: ", repo)
 		return
+	}
+	_, err = githubService.GithubAuxiliaryRepository.Save(appRepository)
+	if err != nil {
+		log.Println("Error saving repository: ", err)
 	}
 }
 

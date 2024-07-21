@@ -17,6 +17,7 @@ type CommitRepository interface {
 	FindAllByDateSince(since *time.Time) ([]*models.Commit, error)
 	FindAll() ([]*models.Commit, error)
 	SaveAll(commits *[]*models.Commit) error
+	FindMostRecentCommit() (*models.Commit, error)
 }
 
 type AppCommitRepository struct {
@@ -47,6 +48,13 @@ func (appCommitRepository *AppCommitRepository) FindById(id uint) (*models.Commi
 
 func (appCommitRepository *AppCommitRepository) FindAllByDateSince(since *time.Time) (commits []*models.Commit, err error) {
 	if err := appCommitRepository.Where("date BETWEEN ? AND ?", since, time.Now()).Find(&commits).Error; err != nil {
+		return nil, err
+	}
+	return
+}
+
+func (appCommitRepository *AppCommitRepository) FindMostRecentCommit() (commit *models.Commit, err error) {
+	if err = appCommitRepository.Order("date desc").First(commit).Error; err != nil {
 		return nil, err
 	}
 	return

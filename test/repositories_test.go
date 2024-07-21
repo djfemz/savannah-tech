@@ -1,6 +1,7 @@
 package test
 
 import (
+	"github.com/djfemz/savannahTechTask/app/mocks"
 	"github.com/djfemz/savannahTechTask/app/models"
 	"github.com/djfemz/savannahTechTask/app/repositories"
 	"github.com/joho/godotenv"
@@ -28,6 +29,14 @@ func TestGetLastCommit(t *testing.T) {
 	var commit = &models.Commit{}
 	db.Order("date desc").First(commit)
 	log.Println("commit: ", *commit)
+	assert.NotNil(t, commit)
+}
+
+func TestFindLastCommitByDate(t *testing.T) {
+	commitRepository := new(mocks.CommitRepository)
+	commitRepository.On("FindMostRecentCommit").Return(testCommits[0], nil)
+	commit, err := commitRepository.FindMostRecentCommit()
+	assert.Nil(t, err)
 	assert.NotNil(t, commit)
 }
 

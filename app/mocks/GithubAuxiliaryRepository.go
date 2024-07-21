@@ -12,6 +12,27 @@ type GithubAuxiliaryRepository struct {
 	mock.Mock
 }
 
+// ExistsByName provides a mock function with given fields: name
+func (_m *GithubAuxiliaryRepository) ExistsByName(name string) (bool, error) {
+	ret := _m.Called(name)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(string) bool); ok {
+		r0 = rf(name)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindById provides a mock function with given fields: id
 func (_m *GithubAuxiliaryRepository) FindById(id uint) (*models.GithubAuxiliaryRepository, error) {
 	ret := _m.Called(id)

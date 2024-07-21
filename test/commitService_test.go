@@ -27,7 +27,7 @@ func TestFetchCommitDataForRepository(t *testing.T) {
 	numberOfCommitsBeforeFetch := len(commits)
 	assert.Nil(t, err)
 	assert.NotNil(t, commits)
-	services.FetchCommits()
+	//services.FetchCommits()
 	commits, err = commitService.GetAllCommits()
 	numberOfCommitsAfterFetch := len(commits)
 	assert.GreaterOrEqual(t, numberOfCommitsAfterFetch, numberOfCommitsBeforeFetch)
@@ -43,4 +43,15 @@ func TestGetCommitsByDateSince(t *testing.T) {
 	commits, err := commitService.GetCommitsByDateSince(since)
 	assert.Nil(t, err)
 	assert.NotNil(t, commits)
+}
+
+func TestGetMostRecentCommit(t *testing.T) {
+	commitRepository := new(mocks.CommitRepository)
+	commitRepository.On("FindMostRecentCommit", mock.Anything).Return(
+		testCommits[0], nil,
+	)
+	commitService := services.NewCommitService(commitRepository)
+	commit, err := commitService.GetMostRecentCommit()
+	assert.NotNil(t, commit)
+	assert.Nil(t, err)
 }

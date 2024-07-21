@@ -27,3 +27,11 @@ func TestFetchGithubRepositoryMetaData(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, foundRepository)
 }
+
+func TestExistsByName(t *testing.T) {
+	appRepository := mocks.NewGithubAuxiliaryRepository(t)
+	appRepository.On("ExistsByName", mock.Anything).Return(true, nil)
+	exists, err := appRepository.ExistsByName("test1")
+	assert.True(t, exists)
+	assert.Nil(t, err)
+}

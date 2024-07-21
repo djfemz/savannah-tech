@@ -50,8 +50,8 @@ func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse) *Com
 		URL:        response.RepoCommit.URL,
 		Date:       response.RepoCommit.Committer.Date,
 		Author: &Author{
-			Name:  response.RepoCommit.Author.Name,
-			Email: response.RepoCommit.Author.Email,
+			Name:  response.RepoCommit.RepoAuthor.Name,
+			Email: response.RepoCommit.RepoAuthor.Email,
 		},
 	}
 }
@@ -70,7 +70,7 @@ func NewCommitResponse(commit *Commit) (commitResponse *dtos.CommitResponse) {
 	return commitResponse
 }
 
-func NewAppRepository(response *dtos.GithubRepositoryResponse) *GithubAuxiliaryRepository {
+func NewGithubAuxiliaryRepository(response *dtos.GithubRepositoryResponse) *GithubAuxiliaryRepository {
 	return &GithubAuxiliaryRepository{
 		Name:           response.Name,
 		Description:    response.Description,

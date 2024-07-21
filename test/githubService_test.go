@@ -5,6 +5,9 @@ import (
 	"github.com/djfemz/savannahTechTask/app/mocks"
 	"github.com/djfemz/savannahTechTask/app/services"
 	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -47,18 +50,23 @@ var githubCommitResponse = []*dtos.GitHubCommitResponse{
 }
 
 func TestFetchCommitData(t *testing.T) {
-	commitRepository := mocks.NewCommitRepository(t)
-	githubAuxiliaryRepository := mocks.NewGithubAuxiliaryRepository(t)
+	commitRepository := new(mocks.CommitRepository)
+	githubAuxiliaryRepository := new(mocks.GithubAuxiliaryRepository)
 	githubService := services.NewGithubService(services.NewCommitService(commitRepository),
 		services.NewGithubRepoService(githubAuxiliaryRepository))
+	commitRepository.On("FindMostRecentCommit").Return(testCommits[0], nil)
+	commitRepository.On("SaveAll", mock.Anything).Return(nil)
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), func(request *http.Request) (*http.Response, error) {
 		res, err := httpmock.NewJsonResponse(http.StatusOK, githubCommitResponse)
+		log.Println("res--->", res)
 		return res, err
 	})
 
-	githubService.FetchCommits()
+	commits, err := githubService.FetchCommits()
+	assert.NotEmpty(t, commits)
+	assert.Nil(t, err)
 
 }

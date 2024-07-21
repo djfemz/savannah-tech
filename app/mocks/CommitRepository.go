@@ -83,6 +83,29 @@ func (_m *CommitRepository) FindById(id uint) (*models.Commit, error) {
 	return r0, r1
 }
 
+// FindMostRecentCommit provides a mock function with given fields:
+func (_m *CommitRepository) FindMostRecentCommit() (*models.Commit, error) {
+	ret := _m.Called()
+
+	var r0 *models.Commit
+	if rf, ok := ret.Get(0).(func() *models.Commit); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Commit)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Save provides a mock function with given fields: commit
 func (_m *CommitRepository) Save(commit *models.Commit) (*models.Commit, error) {
 	ret := _m.Called(commit)

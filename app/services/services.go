@@ -35,6 +35,10 @@ func (commitService *CommitService) GetCommitsByDateSince(since time.Time) (resp
 	return mapToCommitResponses(commits), err
 }
 
+func (commitService *CommitService) GetMostRecentCommit() (*models.Commit, error) {
+	return commitService.repository.FindMostRecentCommit()
+}
+
 func mapToCommits(commits []*dtos.GitHubCommitResponse) []*models.Commit {
 	var usersCommits = make([]*models.Commit, 0)
 	for _, commit := range commits {
