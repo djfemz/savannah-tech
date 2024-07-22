@@ -59,12 +59,6 @@ func (appCommitRepository *AppCommitRepository) FindMostRecentCommit() (commit *
 	return
 }
 
-func GetAuthor(repository *AppCommitRepository, id uint) *models.Author {
-	var author *models.Author
-	repository.Preload(clause.Associations).Model(&models.Author{ID: id}).First(author)
-	return author
-}
-
 func (appCommitRepository *AppCommitRepository) FindAll() (commits []*models.Commit, err error) {
 	if err := appCommitRepository.Preload(clause.Associations).Find(&commits).Error; err != nil {
 		return nil, err

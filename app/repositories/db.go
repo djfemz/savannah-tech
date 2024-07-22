@@ -27,7 +27,10 @@ func ConnectToDatabase() (*gorm.DB, error) {
 		log.Fatal("error connecting to database", err)
 	}
 	err = db.AutoMigrate(&models.Commit{}, &models.GithubAuxiliaryRepository{})
-	db.AutoMigrate(&models.Author{})
+	if err != nil {
+		log.Fatal("error migrating: ", err)
+	}
+	err = db.AutoMigrate(&models.Author{})
 	if err != nil {
 		log.Fatal("error migrating: ", err)
 	}

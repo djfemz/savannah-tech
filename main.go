@@ -38,8 +38,8 @@ var githubService *services.GithubService
 // @BasePath /api/v1
 func main() {
 	configureAppComponents()
-	go startFetchCommitsJob(db)
-	go startFetchRepositoryMetaDataJob(db)
+	go startFetchCommitsJob()
+	go startFetchRepositoryMetaDataJob()
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/api/v1/commits", commitController.GetTopCommitAuthors)
@@ -52,7 +52,7 @@ func main() {
 	}
 }
 
-func startFetchCommitsJob(db *gorm.DB) {
+func startFetchCommitsJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
 		_, err := githubService.FetchCommits()
@@ -67,7 +67,7 @@ func startFetchCommitsJob(db *gorm.DB) {
 	job.Start()
 }
 
-func startFetchRepositoryMetaDataJob(db *gorm.DB) {
+func startFetchRepositoryMetaDataJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
 		githubService.FetchRepositoryMetaData()
