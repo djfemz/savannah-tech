@@ -1,0 +1,140 @@
+basePath: /api/v1
+definitions:
+  appErrors.authorsNotFound:
+    type: object
+  appErrors.commitNotFound:
+    type: object
+  dtos.AuthorResponse:
+    properties:
+      commit_count:
+        type: integer
+      email:
+        type: string
+      username:
+        type: string
+    type: object
+  dtos.CommitResponse:
+    properties:
+      author:
+        type: string
+      author_email:
+        type: string
+      date:
+        type: string
+      id:
+        type: integer
+      message:
+        type: string
+      url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: oladejifemi00@gmail.com
+    name: Oladeji Oluwafemi
+    url: https://github.com/djfemz
+  description: version 1 of api
+  title: Documenting API (SavannahTech Task)
+  version: "1"
+paths:
+  /commits:
+    get:
+      consumes:
+      - application/json
+      description: Get top N commit Authors where N is a number
+      parameters:
+      - description: Number of Authors
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.AuthorResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appErrors.authorsNotFound'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/appErrors.authorsNotFound'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appErrors.authorsNotFound'
+      summary: Get top N commit Authors
+      tags:
+      - Authors
+  /commits/{repo}:
+    get:
+      consumes:
+      - application/json
+      description: Get all commits for repository
+      parameters:
+      - description: Repository Name
+        in: path
+        name: repo
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CommitResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appErrors.commitNotFound'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/appErrors.commitNotFound'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appErrors.commitNotFound'
+      summary: Get commits for repository
+      tags:
+      - Commits
+  /commits/since:
+    get:
+      consumes:
+      - application/json
+      description: Get all commits starting from the date supplied
+      parameters:
+      - description: date
+        in: query
+        name: since
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CommitResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appErrors.commitNotFound'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/appErrors.commitNotFound'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appErrors.commitNotFound'
+      summary: Get commits by date
+      tags:
+      - Commits
+swagger: "2.0"

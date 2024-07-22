@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load("example.env")
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}
@@ -54,7 +54,7 @@ func main() {
 
 func startFetchCommitsJob(db *gorm.DB) {
 	job := cron.New()
-	_, err := job.AddFunc("* */1 * * *", func() {
+	_, err := job.AddFunc("* * */1 * *", func() {
 		_, err := githubService.FetchCommits()
 		if err != nil {
 			log.Println("Error fetching commits: ", err)
@@ -69,7 +69,7 @@ func startFetchCommitsJob(db *gorm.DB) {
 
 func startFetchRepositoryMetaDataJob(db *gorm.DB) {
 	job := cron.New()
-	_, err := job.AddFunc("* */1 * * *", func() {
+	_, err := job.AddFunc("* * */1 * *", func() {
 		githubService.FetchRepositoryMetaData()
 	})
 	if err != nil {
