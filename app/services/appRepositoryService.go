@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/djfemz/savannahTechTask/app/appErrors"
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
 	"github.com/djfemz/savannahTechTask/app/models"
 	"github.com/djfemz/savannahTechTask/app/repositories"
@@ -17,7 +18,7 @@ func NewGithubRepoService(appRepoRepository repositories.GithubAuxiliaryReposito
 func (appRepositoryService *GithubRepositoryService) GetRepositoryBy(name string) (repository *dtos.RepositoryResponse, err error) {
 	appRepository, err := appRepositoryService.GithubAuxiliaryRepository.FindByName(name)
 	if err != nil {
-		return nil, err
+		return nil, appErrors.NewRepositoryNotFoundError()
 	}
 	return models.NewRepositoryResponse(appRepository), nil
 }

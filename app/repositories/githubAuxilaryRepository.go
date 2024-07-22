@@ -48,8 +48,8 @@ func (githubAuxRepo *AppGithubAuxiliaryRepository) FindByName(name string) (*mod
 }
 
 func (githubAuxRepo *AppGithubAuxiliaryRepository) ExistsByName(name string) (bool, error) {
-	repository := &models.GithubAuxiliaryRepository{}
-	if err := githubAuxRepo.Where("name = ?", name).First(repository).Error; err != nil {
+	var repository *models.GithubAuxiliaryRepository
+	if err := githubAuxRepo.Where(&models.GithubAuxiliaryRepository{Name: name}).First(repository).Error; err != nil {
 		return false, err
 	} else if repository.Name == name {
 		return true, nil

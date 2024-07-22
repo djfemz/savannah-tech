@@ -8,6 +8,7 @@ import (
 	"github.com/djfemz/savannahTechTask/app/utils"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -41,7 +42,8 @@ func (githubService *GithubService) FetchCommits() (githubUserCommits []*dtos.Gi
 
 func (githubService *GithubService) FetchRepositoryMetaData() {
 	repository := dtos.NewGithubRepositoryResponse()
-	req, err := http.NewRequest(http.MethodGet, utils.GITHUB_REPOSITORY_URL, nil)
+	log.Println("github url:", os.Getenv("GITHUB_API_REPOSITORY_URL"))
+	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_REPOSITORY_URL"), nil)
 	if err != nil {
 		log.Println("Error creating request: ", err)
 	}
@@ -60,7 +62,6 @@ func (githubService *GithubService) FetchRepositoryMetaData() {
 	if isExistingRepo {
 		repo, _ := githubService.UpdateByName(repoName, appRepository)
 		log.Println("repository updated: ", repo)
-		return
 	}
 	_, err = githubService.GithubAuxiliaryRepository.Save(appRepository)
 	if err != nil {
@@ -69,7 +70,7 @@ func (githubService *GithubService) FetchRepositoryMetaData() {
 }
 
 func getCommits(commit *models.Commit) (commits []*dtos.GitHubCommitResponse, err error) {
-	req, err := http.NewRequest(http.MethodGet, utils.GITHUB_COMMIT_URL, nil)
+	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), nil)
 	if err != nil {
 		log.Println("Error creating request: ", err)
 	}

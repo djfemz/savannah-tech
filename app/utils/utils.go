@@ -7,10 +7,12 @@ import (
 )
 
 var (
-	GITHUB_COMMIT_URL      = os.Getenv("GITHUB_API_COMMIT_URL")
-	GITHUB_REPOSITORY_URL  = os.Getenv("GITHUB_API_REPOSITORY_URL")
 	GITHUB_REPOSITORY_NAME = os.Getenv("REPO_NAME")
 	RFC_TIME_SUFFIX        = "Z"
+	REPO                   = "repo"
+	SIZE                   = "size"
+	DATABASE_PORT          = "DATABASE_PORT"
+	SINCE                  = "since"
 )
 
 func ExtractParamFromRequest(paramName string, ctx *gin.Context) (uint64, error) {

@@ -7,7 +7,6 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -61,7 +60,6 @@ func TestFetchCommitData(t *testing.T) {
 
 	httpmock.RegisterResponder(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), func(request *http.Request) (*http.Response, error) {
 		res, err := httpmock.NewJsonResponse(http.StatusOK, githubCommitResponse)
-		log.Println("res--->", res)
 		return res, err
 	})
 

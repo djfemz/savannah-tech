@@ -4,7 +4,6 @@ import (
 	"github.com/djfemz/savannahTechTask/app/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"log"
 	"strconv"
 	"time"
 )
@@ -29,9 +28,6 @@ func NewCommitRepository(db *gorm.DB) CommitRepository {
 }
 
 func (appCommitRepository *AppCommitRepository) Save(commit *models.Commit) (*models.Commit, error) {
-	var author *models.Author
-	appCommitRepository.Where(&models.Author{Username: commit.Author.Username}).First(author)
-
 	if err := appCommitRepository.DB.Create(commit).Error; err != nil {
 		return nil, err
 	}
@@ -63,16 +59,21 @@ func (appCommitRepository *AppCommitRepository) FindMostRecentCommit() (commit *
 	return
 }
 
+func GetAuthor(repository *AppCommitRepository, id uint) *models.Author {
+	var author *models.Author
+	repository.Preload(clause.Associations).Model(&models.Author{ID: id}).First(author)
+	return author
+}
+
 func (appCommitRepository *AppCommitRepository) FindAll() (commits []*models.Commit, err error) {
 	if err := appCommitRepository.Preload(clause.Associations).Find(&commits).Error; err != nil {
-		log.Println("error finding commits: ", err)
 		return nil, err
 	}
 	return commits, nil
 }
 
 func (appCommitRepository *AppCommitRepository) SaveAll(commits []*models.Commit) error {
-	if err := appCommitRepository.DB.Save(commits).Error; err != nil {
+	if err := appCommitRepository.Create(commits).Error; err != nil {
 		return err
 	}
 	return nil
@@ -85,7 +86,6 @@ func (appCommitRepository *AppCommitRepository) FindTopCommitAuthors(size int) (
 	if err := appCommitRepository.Raw(sql).Limit(size).Find(&authors).Error; err != nil {
 		return nil, err
 	}
-	log.Println("authors: ", authors)
 	return authors, nil
 }
 

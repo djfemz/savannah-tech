@@ -1,10 +1,12 @@
 package services
 
 import (
+	"github.com/djfemz/savannahTechTask/app/appErrors"
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
 	"github.com/djfemz/savannahTechTask/app/mappers"
 	"github.com/djfemz/savannahTechTask/app/models"
 	"github.com/djfemz/savannahTechTask/app/repositories"
+	"log"
 	"time"
 )
 
@@ -18,20 +20,21 @@ func NewCommitService(repository repositories.CommitRepository) *CommitService {
 	}
 }
 
-// TODO: Add Caching Strategies
 func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitResponse, err error) {
 	commits, err := commitService.repository.FindAll()
 	if err != nil {
-		return nil, err
+		return nil, appErrors.NewCommitNotFoundError()
 	}
 	responses = mappers.MapToCommitResponses(commits)
 	return responses, err
 }
 
-func (commitService *CommitService) GetCommitsByDateSince(since time.Time) (response []*dtos.CommitResponse, err error) {
-	commits, err := commitService.repository.FindAllByDateSince(&since)
+func (commitService *CommitService) GetCommitsByDateSince(since string) (response []*dtos.CommitResponse, err error) {
+	sinceTime, err := time.Parse("01-02-2006", since)
+	log.Println("since: ", sinceTime)
+	commits, err := commitService.repository.FindAllByDateSince(&sinceTime)
 	if err != nil {
-		return nil, err
+		return nil, appErrors.NewCommitNotFoundError()
 	}
 	return mappers.MapToCommitResponses(commits), err
 }
@@ -43,7 +46,7 @@ func (commitService *CommitService) GetMostRecentCommit() (*models.Commit, error
 func (commitService *CommitService) GetTopCommitAuthors(size int) ([]*dtos.AuthorResponse, error) {
 	authors, err := commitService.repository.FindTopCommitAuthors(size)
 	if err != nil {
-		return nil, err
+		return nil, appErrors.NewAuthorNotFoundError()
 	}
 	authorRes := mapToAuthorResponse(authors)
 	return authorRes, nil
@@ -52,7 +55,7 @@ func (commitService *CommitService) GetTopCommitAuthors(size int) ([]*dtos.Autho
 func (commitService *CommitService) GetCommitsForRepo(repoName string) ([]*dtos.CommitResponse, error) {
 	commits, err := commitService.repository.FindCommitsForRepoByName(repoName)
 	if err != nil {
-		return nil, err
+		return nil, appErrors.NewCommitNotFoundError()
 	}
 	commitRes := mappers.MapToCommitResponses(commits)
 	return commitRes, nil
