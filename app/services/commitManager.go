@@ -31,7 +31,7 @@ func (commitManager *CommitManager) FetchCommitDataFrom(page uint64, since time.
 
 func (commitManager *CommitManager) StartJob() {
 	job := cron.New()
-	_, err := job.AddFunc("* */1 * * *", func() {
+	_, err := job.AddFunc("* * */1 * *", func() {
 		for counter := 1; counter < 20000; counter++ {
 			go commitManager.fetch(counter)
 		}

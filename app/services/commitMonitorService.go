@@ -56,7 +56,7 @@ func getData(url string, page uint64, start *time.Time) (resp *http.Response, er
 
 func (commitMonitorService *CommitMonitorService) StartJob() {
 	job := cron.New()
-	_, err := job.AddFunc("* */1 * * *", func() {
+	_, err := job.AddFunc("* * */1 * *", func() {
 		for counter := 1; counter < 20000; counter++ {
 			go commitMonitorService.fetch(counter)
 		}
