@@ -82,7 +82,6 @@ func addHeadersToRequest(req *http.Request, start *time.Time, page uint64) {
 		query.Add("per_page", strconv.FormatUint(100, 10))
 	}
 	authHeader := "Bearer " + os.Getenv("AUTH_TOKEN")
-	log.Println("auth: " + authHeader)
 	query.Add("since", start.String())
 	query.Add("Accept", "application/vnd.github+json")
 	query.Add("Authorization", authHeader)
