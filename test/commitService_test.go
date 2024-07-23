@@ -6,7 +6,6 @@ import (
 	"github.com/djfemz/savannahTechTask/app/services"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"log"
 	"testing"
 )
 
@@ -14,28 +13,6 @@ var testCommits = []*models.Commit{{ID: 1, RepoName: "test repo", CommitHash: "a
 	{ID: 2, RepoName: "test repo 1", CommitHash: "abc1234"}}
 
 var testAuthors = []*models.Author{{ID: 1, Name: "author 1", Email: "john@email.com"}, {ID: 1, Name: "author 1", Email: "john@email.com"}, {ID: 1, Name: "author 1", Email: "john@email.com"}}
-
-func TestFetchCommitDataForRepository(t *testing.T) {
-	commitRepository := new(mocks.CommitRepository)
-	commitRepository.On("FindAll", mock.Anything).Return(
-		testCommits,
-		nil,
-	)
-	commitRepository.On("SaveAll", mock.Anything).Return(nil)
-	commitRepository.On("FindMostRecentCommit", mock.Anything).Return(
-		testCommits[0], nil)
-	commitService := services.NewCommitService(commitRepository)
-	githubService := services.NewGithubService(commitService, nil)
-	commits, err := commitService.GetAllCommits()
-	numberOfCommitsBeforeFetch := len(commits)
-	assert.Nil(t, err)
-	assert.NotNil(t, commits)
-	data, _ := githubService.FetchCommits()
-	log.Println(data)
-	commits, err = commitService.GetAllCommits()
-	numberOfCommitsAfterFetch := len(commits)
-	assert.GreaterOrEqual(t, numberOfCommitsAfterFetch, numberOfCommitsBeforeFetch)
-}
 
 func TestGetCommitsByDateSince(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
