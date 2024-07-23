@@ -39,7 +39,7 @@ func (commitMonitorService *CommitMonitorService) FetchCommitData(page uint64) (
 }
 
 func getData(url string, page uint64, start *time.Time) (resp *http.Response, err error) {
-	client := &http.Client{}
+	client := http.Client{}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -57,9 +57,7 @@ func getData(url string, page uint64, start *time.Time) (resp *http.Response, er
 func (commitMonitorService *CommitMonitorService) StartJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
-		for counter := 1; counter < 20000; counter++ {
-			go commitMonitorService.fetch(counter)
-		}
+		go commitMonitorService.fetch(0)
 	})
 	if err != nil {
 		log.Println("Error creating job: ", err)
@@ -78,18 +76,22 @@ func (commitMonitorService *CommitMonitorService) fetch(counter int) {
 }
 
 func addHeadersToRequest(req *http.Request, start *time.Time, page uint64) {
-	if page < 1 {
-		page = 1
-	}
 	query := req.URL.Query()
+	if page > 0 {
+		query.Add("page", strconv.FormatUint(page, 10))
+		query.Add("per_page", strconv.FormatUint(100, 10))
+	}
+	authHeader := "Bearer " + os.Getenv("AUTH_TOKEN")
+	log.Println("auth: " + authHeader)
 	query.Add("since", start.String())
-	query.Add("page", strconv.FormatUint(page, 10))
-	query.Add("per_page", strconv.FormatUint(100, 10))
+	query.Add("Accept", "application/vnd.github+json")
+	query.Add("Authorization", authHeader)
 	req.URL.RawQuery = query.Encode()
 }
 
 func extractDataInto[t any](resp *http.Response, into *t) (*t, error) {
-	err := json.NewDecoder(resp.Body).Decode(&into)
+	log.Println("res: ", resp)
+	err := json.NewDecoder(resp.Body).Decode(into)
 	if err != nil {
 		log.Println("Error reading response: ", err)
 		return nil, err
