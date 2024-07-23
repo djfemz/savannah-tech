@@ -67,7 +67,7 @@ func (appCommitRepository *AppCommitRepository) FindAll() (commits []*models.Com
 }
 
 func (appCommitRepository *AppCommitRepository) SaveAll(commits []*models.Commit) error {
-	if err := appCommitRepository.Create(commits).Error; err != nil {
+	if err := appCommitRepository.DB.Save(commits).Error; err != nil {
 		return err
 	}
 	return nil

@@ -3,12 +3,14 @@ package mappers
 import (
 	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
 	"github.com/djfemz/savannahTechTask/app/models"
+	"log"
 )
 
-func MapToCommits(commits []*dtos.GitHubCommitResponse) []*models.Commit {
+func MapToCommits(commits *[]dtos.GitHubCommitResponse) []*models.Commit {
 	var usersCommits = make([]*models.Commit, 0)
-	for _, commit := range commits {
-		userCommit := models.NewCommitFromGithubCommitResponse(commit)
+	log.Println("commits: ", commits)
+	for _, commit := range *commits {
+		userCommit := models.NewCommitFromGithubCommitResponse(&commit)
 		usersCommits = append(usersCommits, userCommit)
 	}
 	return usersCommits

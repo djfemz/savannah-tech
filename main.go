@@ -7,7 +7,6 @@ import (
 	_ "github.com/djfemz/savannahTechTask/docs"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/robfig/cron/v3"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
@@ -15,8 +14,10 @@ import (
 	"os"
 )
 
+var err error
+
 func init() {
-	err := godotenv.Load("example.env")
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}
@@ -25,7 +26,9 @@ func init() {
 var db *gorm.DB
 var commitController *controllers.CommitController
 var commitService *services.CommitService
-var githubService *services.GithubService
+var repoDiscoveryService *services.RepoDiscoveryService
+var commitManager *services.CommitManager
+var commitMonitorService *services.CommitMonitorService
 
 // @title Documenting API (SavannahTech Task)
 // @version 1
@@ -38,8 +41,9 @@ var githubService *services.GithubService
 // @BasePath /api/v1
 func main() {
 	configureAppComponents()
-	go startFetchCommitsJob()
-	go startFetchRepositoryMetaDataJob()
+	repoDiscoveryService.StartJob()
+	commitManager.StartJob()
+	commitMonitorService.StartJob()
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/api/v1/commits", commitController.GetTopCommitAuthors)
@@ -52,35 +56,8 @@ func main() {
 	}
 }
 
-func startFetchCommitsJob() {
-	job := cron.New()
-	_, err := job.AddFunc("* * */1 * *", func() {
-		_, err := githubService.FetchCommits()
-		if err != nil {
-			log.Println("Error fetching commits: ", err)
-		}
-	})
-	if err != nil {
-		log.Println("Error creating job: ", err)
-	}
-	log.Println("Starting new task...")
-	job.Start()
-}
-
-func startFetchRepositoryMetaDataJob() {
-	job := cron.New()
-	_, err := job.AddFunc("* * */1 * *", func() {
-		githubService.FetchRepositoryMetaData()
-	})
-	if err != nil {
-		log.Println("Error creating job: ", err)
-	}
-	log.Println("Starting new task...")
-	job.Start()
-}
-
 func configureAppComponents() {
-	db, err := repositories.ConnectToDatabase()
+	db, err = repositories.ConnectToDatabase()
 	if err != nil {
 		log.Fatal("Failed to connect to Datasource")
 	}
@@ -88,6 +65,8 @@ func configureAppComponents() {
 	githubAuxRepo := repositories.NewGithubAuxiliaryRepository(db)
 	commitService = services.NewCommitService(commitRepository)
 	githubAuxService := services.NewGithubRepoService(githubAuxRepo)
-	githubService = services.NewGithubService(commitService, githubAuxService)
+	repoDiscoveryService = services.NewRepoDiscoveryService(githubAuxService)
+	commitManager = services.NewCommitManager(commitService)
+	commitMonitorService = services.NewCommitMonitorService(commitService)
 	commitController = controllers.NewCommitController(commitService)
 }
