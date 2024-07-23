@@ -15,7 +15,7 @@ type CommitManager struct {
 }
 
 func NewCommitManager(commitService *CommitService) *CommitManager {
-	return &CommitManager{}
+	return &CommitManager{commitService}
 }
 
 func (commitManager *CommitManager) FetchCommitDataFrom(page uint64, since time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
@@ -35,9 +35,7 @@ var wg sync.WaitGroup
 func (commitManager *CommitManager) StartJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
-
 		go commitManager.fetch(0)
-
 	})
 	if err != nil {
 		log.Println("Error creating job: ", err)
@@ -52,6 +50,11 @@ func (commitManager *CommitManager) fetch(counter int) {
 	if err != nil {
 		log.Println("Error fetching commits: ", err)
 	}
-	commits := mappers.MapToCommits(data)
-	err = commitManager.repository.SaveAll(commits)
+	if data != nil && len(*data) > 0 {
+		commits := mappers.MapToCommits(data)
+		if err = commitManager.repository.SaveAll(commits); err != nil {
+			log.Println("error saving data: ", err)
+		}
+	}
+
 }

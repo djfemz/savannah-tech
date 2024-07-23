@@ -43,8 +43,13 @@ func (repoDiscoveryService *RepoDiscoveryService) StartJob() {
 }
 
 func (repoDiscoveryService *RepoDiscoveryService) fetch() {
-	githubRepository, _ := repoDiscoveryService.FetchRepoMetaData()
+	githubRepository, err := repoDiscoveryService.FetchRepoMetaData()
+	if err != nil {
+		log.Println("error: ", err)
+		return
+	}
 	auxiliaryRepository := models.NewGithubAuxiliaryRepository(githubRepository)
+	log.Println("repo fetched: ", *auxiliaryRepository)
 	if ok, _ := repoDiscoveryService.ExistsByName(githubRepository.Name); ok {
 		auxiliaryRepository, _ = repoDiscoveryService.UpdateByName(githubRepository.Name, auxiliaryRepository)
 	}

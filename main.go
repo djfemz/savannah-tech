@@ -17,7 +17,7 @@ import (
 var err error
 
 func init() {
-	err = godotenv.Load("example.env")
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}
@@ -41,9 +41,9 @@ var commitMonitorService *services.CommitMonitorService
 // @BasePath /api/v1
 func main() {
 	configureAppComponents()
-	repoDiscoveryService.StartJob()
-	commitManager.StartJob()
-	commitMonitorService.StartJob()
+	go repoDiscoveryService.StartJob()
+	go commitManager.StartJob()
+	go commitMonitorService.StartJob()
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/api/v1/commits", commitController.GetTopCommitAuthors)
