@@ -3,9 +3,9 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/djfemz/savannahTechTask/app/appErrors"
-	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
-	"github.com/djfemz/savannahTechTask/app/mappers"
+	"github.com/djfemz/savannahTechTask/api/appErrors"
+	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
+	"github.com/djfemz/savannahTechTask/api/mappers"
 	"github.com/robfig/cron/v3"
 	"log"
 	"net/http"

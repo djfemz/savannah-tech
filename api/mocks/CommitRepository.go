@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	models "github.com/djfemz/savannahTechTask/app/models"
+	models "github.com/djfemz/savannahTechTask/api/models"
 	mock "github.com/stretchr/testify/mock"
 
 	time "time"

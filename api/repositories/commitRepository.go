@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/djfemz/savannahTechTask/app/models"
+	"github.com/djfemz/savannahTechTask/api/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"strconv"

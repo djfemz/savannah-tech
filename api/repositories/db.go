@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"fmt"
-	"github.com/djfemz/savannahTechTask/app/models"
-	"github.com/djfemz/savannahTechTask/app/utils"
+	"github.com/djfemz/savannahTechTask/api/models"
+	"github.com/djfemz/savannahTechTask/api/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -18,6 +18,7 @@ func ConnectToDatabase() (*gorm.DB, error) {
 		log.Fatal("Error reading port: ", err)
 	}
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d TimeZone=Africa/Lagos sslmode=disable", os.Getenv("DATABASE_HOST"), os.Getenv("DATABASE_USERNAME"), os.Getenv("DATABASE_PASSWORD"), os.Getenv("DATABASE_NAME"), port)
+	
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
 		PreferSimpleProtocol: true}), &gorm.Config{

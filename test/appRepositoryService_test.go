@@ -1,8 +1,8 @@
 package test
 
 import (
-	"github.com/djfemz/savannahTechTask/app/mocks"
-	"github.com/djfemz/savannahTechTask/app/models"
+	"github.com/djfemz/savannahTechTask/api/mocks"
+	"github.com/djfemz/savannahTechTask/api/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"

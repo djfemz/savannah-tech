@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/djfemz/savannahTechTask/app/controllers"
-	"github.com/djfemz/savannahTechTask/app/repositories"
-	"github.com/djfemz/savannahTechTask/app/services"
+	"github.com/djfemz/savannahTechTask/api/controllers"
+	"github.com/djfemz/savannahTechTask/api/repositories"
+	"github.com/djfemz/savannahTechTask/api/services"
 	_ "github.com/djfemz/savannahTechTask/docs"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -17,7 +17,7 @@ import (
 var err error
 
 func init() {
-	err = godotenv.Load()
+	err = godotenv.Load("example.env")
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}

@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres_dockerizing
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - database_dockerizing:/var/lib/postgresql/data
+      - ./dbshell:/docker-entrypoint-initdb.d/
+    networks:
+      - fullstack
+  api:
+    build: .
+    container_name: api_c
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+volumes:
+    database_dockerizing:
+    api_volume:
+
+networks:
+    fullstack:
+      driver: bridge

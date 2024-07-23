@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/djfemz/savannahTechTask/app/mocks"
+	"github.com/djfemz/savannahTechTask/api/mocks"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"log"

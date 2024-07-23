@@ -1,11 +1,11 @@
 package services
 
 import (
-	"github.com/djfemz/savannahTechTask/app/appErrors"
-	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
-	"github.com/djfemz/savannahTechTask/app/mappers"
-	"github.com/djfemz/savannahTechTask/app/models"
-	"github.com/djfemz/savannahTechTask/app/repositories"
+	"github.com/djfemz/savannahTechTask/api/appErrors"
+	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
+	"github.com/djfemz/savannahTechTask/api/mappers"
+	"github.com/djfemz/savannahTechTask/api/models"
+	"github.com/djfemz/savannahTechTask/api/repositories"
 	"log"
 	"time"
 )

@@ -1,7 +1,7 @@
 package test
 
 import (
-	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
+	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"time"
 )
 

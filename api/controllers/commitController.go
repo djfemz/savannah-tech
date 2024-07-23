@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/djfemz/savannahTechTask/app/services"
-	"github.com/djfemz/savannahTechTask/app/utils"
+	"github.com/djfemz/savannahTechTask/api/services"
+	"github.com/djfemz/savannahTechTask/api/utils"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"

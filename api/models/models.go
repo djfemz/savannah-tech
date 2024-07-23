@@ -1,7 +1,7 @@
 package models
 
 import (
-	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
+	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"gorm.io/gorm"
 	"os"
 	"time"

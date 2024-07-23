@@ -1,8 +1,8 @@
 package services
 
 import (
-	dtos "github.com/djfemz/savannahTechTask/app/dtos/responses"
-	"github.com/djfemz/savannahTechTask/app/models"
+	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
+	"github.com/djfemz/savannahTechTask/api/models"
 	"github.com/robfig/cron/v3"
 	"log"
 	"os"
