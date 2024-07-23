@@ -51,7 +51,7 @@ func (githubAuxRepo *AppGithubAuxiliaryRepository) ExistsByName(name string) (bo
 	var repository *models.GithubAuxiliaryRepository
 	if err := githubAuxRepo.Where(&models.GithubAuxiliaryRepository{Name: name}).First(repository).Error; err != nil {
 		return false, err
-	} else if repository.Name == name {
+	} else if repository!=nil && repository.Name == name {
 		return true, nil
 	}
 	return false, nil
