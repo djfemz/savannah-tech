@@ -14,7 +14,7 @@ services:
     image: postgres:14-alpine
     container_name: "db"
     ports:
-      - 8081:5432
+      - "8081:5432"
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}

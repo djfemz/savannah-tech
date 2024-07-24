@@ -18,7 +18,7 @@ func NewCommitManager(commitService *CommitService) *CommitManager {
 	return &CommitManager{commitService}
 }
 
-func (commitManager *CommitManager) FetchCommitDataFrom(page uint64, since time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
+func (commitManager *CommitManager) FetchPageOfCommitDataFrom(page uint64, since time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
 	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), page, &since)
 	if err != nil {
 		return nil, err
@@ -44,9 +44,9 @@ func (commitManager *CommitManager) StartJob() {
 	job.Start()
 }
 
-func (commitManager *CommitManager) fetch(counter int) {
+func (commitManager *CommitManager) fetch(page int) {
 	since, _ := time.Parse("01-02-2006", os.Getenv("FETCH_DATE_SINCE"))
-	data, err := commitManager.FetchCommitDataFrom(uint64(counter), since)
+	data, err := commitManager.FetchPageOfCommitDataFrom(uint64(page), since)
 	if err != nil {
 		log.Println("Error fetching commits: ", err)
 	}

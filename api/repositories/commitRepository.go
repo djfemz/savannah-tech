@@ -28,7 +28,7 @@ func NewCommitRepository(db *gorm.DB) CommitRepository {
 }
 
 func (appCommitRepository *AppCommitRepository) Save(commit *models.Commit) (*models.Commit, error) {
-	if err := appCommitRepository.DB.Create(commit).Error; err != nil {
+	if err := appCommitRepository.Create(commit).Error; err != nil {
 		return nil, err
 	}
 	if err := appCommitRepository.Last(commit).Error; err != nil {
