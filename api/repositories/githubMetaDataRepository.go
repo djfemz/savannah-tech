@@ -13,15 +13,15 @@ type GithubAuxiliaryRepository interface {
 	UpdateByName(name string, repository *models.GithubAuxiliaryRepository) (*models.GithubAuxiliaryRepository, error)
 }
 
-type AppGithubAuxiliaryRepository struct {
+type GithubMetaDataRepository struct {
 	*gorm.DB
 }
 
 func NewGithubAuxiliaryRepository(db *gorm.DB) GithubAuxiliaryRepository {
-	return &AppGithubAuxiliaryRepository{db}
+	return &GithubMetaDataRepository{db}
 }
 
-func (githubAuxRepo *AppGithubAuxiliaryRepository) Save(repository *models.GithubAuxiliaryRepository) (*models.GithubAuxiliaryRepository, error) {
+func (githubAuxRepo *GithubMetaDataRepository) Save(repository *models.GithubAuxiliaryRepository) (*models.GithubAuxiliaryRepository, error) {
 	if err := githubAuxRepo.Create(repository).Error; err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func (githubAuxRepo *AppGithubAuxiliaryRepository) Save(repository *models.Githu
 	return repository, nil
 }
 
-func (githubAuxRepo *AppGithubAuxiliaryRepository) FindById(id uint) (*models.GithubAuxiliaryRepository, error) {
+func (githubAuxRepo *GithubMetaDataRepository) FindById(id uint) (*models.GithubAuxiliaryRepository, error) {
 	repository := &models.GithubAuxiliaryRepository{}
 	if err := githubAuxRepo.Where("id=?", id).First(repository).Error; err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (githubAuxRepo *AppGithubAuxiliaryRepository) FindById(id uint) (*models.Gi
 	return repository, nil
 }
 
-func (githubAuxRepo *AppGithubAuxiliaryRepository) FindByName(name string) (*models.GithubAuxiliaryRepository, error) {
+func (githubAuxRepo *GithubMetaDataRepository) FindByName(name string) (*models.GithubAuxiliaryRepository, error) {
 	repository := &models.GithubAuxiliaryRepository{}
 	if err := githubAuxRepo.Where("name=?", name).First(repository).Error; err != nil {
 		return nil, err
@@ -47,17 +47,17 @@ func (githubAuxRepo *AppGithubAuxiliaryRepository) FindByName(name string) (*mod
 	return repository, nil
 }
 
-func (githubAuxRepo *AppGithubAuxiliaryRepository) ExistsByName(name string) (bool, error) {
+func (githubAuxRepo *GithubMetaDataRepository) ExistsByName(name string) (bool, error) {
 	var repository *models.GithubAuxiliaryRepository
 	if err := githubAuxRepo.Where(&models.GithubAuxiliaryRepository{Name: name}).First(repository).Error; err != nil {
 		return false, err
-	} else if repository!=nil && repository.Name == name {
+	} else if repository != nil && repository.Name == name {
 		return true, nil
 	}
 	return false, nil
 }
 
-func (githubAuxRepo *AppGithubAuxiliaryRepository) UpdateByName(name string, repository *models.GithubAuxiliaryRepository) (repo *models.GithubAuxiliaryRepository, err error) {
+func (githubAuxRepo *GithubMetaDataRepository) UpdateByName(name string, repository *models.GithubAuxiliaryRepository) (repo *models.GithubAuxiliaryRepository, err error) {
 	if err = githubAuxRepo.Model(&models.GithubAuxiliaryRepository{}).Where("name = ?", name).Updates(repository).Error; err != nil {
 		return nil, err
 	}
