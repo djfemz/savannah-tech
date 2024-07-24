@@ -11,7 +11,7 @@ type GithubRepositoryService struct {
 	repositories.GithubAuxiliaryRepository
 }
 
-func NewGithubRepoService(appRepoRepository repositories.GithubAuxiliaryRepository) *GithubRepositoryService {
+func NewGithubRepoMetadataService(appRepoRepository repositories.GithubAuxiliaryRepository) *GithubRepositoryService {
 	return &GithubRepositoryService{appRepoRepository}
 }
 

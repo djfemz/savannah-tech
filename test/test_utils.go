@@ -8,7 +8,18 @@ import (
 	"time"
 )
 
-func loadTestRepositories() []*dtos.GitHubCommitResponse {
+func loadTestGithubRepositoryMetaData() *dtos.GithubRepositoryResponse {
+	return &dtos.GithubRepositoryResponse{
+		ID:       23,
+		NodeID:   "22345678422",
+		Name:     "chromium",
+		FullName: "chromium",
+		Private:  false,
+	}
+
+}
+
+func loadTestGithubCommitData() []*dtos.GitHubCommitResponse {
 	var since, err = utils.GetTimeFrom(os.Getenv("ISO_TIME_FORMAT"))
 	if err != nil {
 		log.Println(err)
@@ -67,7 +78,7 @@ func loadTestRepositories() []*dtos.GitHubCommitResponse {
 }
 
 func GetByDate(since time.Time) (response *[]dtos.GitHubCommitResponse) {
-	for _, repository := range loadTestRepositories() {
+	for _, repository := range loadTestGithubCommitData() {
 		if repository.CommitDate == since {
 			*response = append(*response, *repository)
 		}

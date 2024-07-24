@@ -64,7 +64,7 @@ func configureAppComponents() {
 	commitRepository := repositories.NewCommitRepository(db)
 	githubAuxRepo := repositories.NewGithubAuxiliaryRepository(db)
 	commitService = services.NewCommitService(commitRepository)
-	githubAuxService := services.NewGithubRepoService(githubAuxRepo)
+	githubAuxService := services.NewGithubRepoMetadataService(githubAuxRepo)
 	repoDiscoveryService = services.NewRepoDiscoveryService(githubAuxService)
 	commitManager = services.NewCommitManager(commitService)
 	commitMonitorService = services.NewCommitMonitorService(commitService)

@@ -49,7 +49,6 @@ func (repoDiscoveryService *RepoDiscoveryService) fetch() {
 		return
 	}
 	auxiliaryRepository := models.NewGithubAuxiliaryRepository(githubRepository)
-	log.Println("repo fetched: ", *auxiliaryRepository)
 	if ok, _ := repoDiscoveryService.ExistsByName(githubRepository.Name); ok {
 		auxiliaryRepository, _ = repoDiscoveryService.UpdateByName(githubRepository.Name, auxiliaryRepository)
 	}
