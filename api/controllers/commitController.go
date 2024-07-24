@@ -4,7 +4,6 @@ import (
 	"github.com/djfemz/savannahTechTask/api/services"
 	"github.com/djfemz/savannahTechTask/api/utils"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -74,7 +73,6 @@ func (commitController *CommitController) GetCommitsForRepository(ctx *gin.Conte
 // @Router       /commits/since [get]
 func (commitController *CommitController) GetCommitsByDateSince(ctx *gin.Context) {
 	since := ctx.Query(utils.SINCE)
-	log.Println("since cont: ", since)
 	commits, err := commitController.CommitService.GetCommitsByDateSince(since)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err)

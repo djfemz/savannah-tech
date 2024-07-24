@@ -6,8 +6,7 @@ import (
 	"github.com/djfemz/savannahTechTask/api/mappers"
 	"github.com/djfemz/savannahTechTask/api/models"
 	"github.com/djfemz/savannahTechTask/api/repositories"
-	"log"
-	"time"
+	"github.com/djfemz/savannahTechTask/api/utils"
 )
 
 type CommitService struct {
@@ -30,9 +29,8 @@ func (commitService *CommitService) GetAllCommits() (responses []*dtos.CommitRes
 }
 
 func (commitService *CommitService) GetCommitsByDateSince(since string) (response []*dtos.CommitResponse, err error) {
-	sinceTime, err := time.Parse("01-02-2006", since)
-	log.Println("since: ", sinceTime)
-	commits, err := commitService.repository.FindAllByDateSince(&sinceTime)
+	sinceTime, err := utils.GetTimeFrom(since)
+	commits, err := commitService.repository.FindAllByDateSince(sinceTime)
 	if err != nil {
 		return nil, appErrors.NewCommitNotFoundError()
 	}

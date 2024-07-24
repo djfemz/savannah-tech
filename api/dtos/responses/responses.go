@@ -132,9 +132,9 @@ type GithubRepositoryResponse struct {
 }
 
 type RepoAuthor struct {
-	Name  string    `json:"name,omitempty,-"`
-	Email string    `json:"email,omitempty,-"`
-	Date  time.Time `json:"date,omitempty,-"`
+	Name       string    `json:"name,omitempty,-"`
+	Email      string    `json:"email,omitempty,-"`
+	CommitDate time.Time `json:"date,omitempty,-"`
 }
 
 type RepoCommit struct {

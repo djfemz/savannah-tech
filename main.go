@@ -50,7 +50,7 @@ func main() {
 	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
 	router.GET("/api/v1/commits/since", commitController.GetCommitsByDateSince)
 	port := os.Getenv("SERVER_PORT")
-	err := router.Run(":" + port)
+	err = router.Run(":" + port)
 	if err != nil {
 		log.Fatal("Failed to start server on port: ", port)
 	}

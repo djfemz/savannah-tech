@@ -15,15 +15,16 @@ func init() {
 	}
 }
 
+var commitRepository = new(mocks.CommitRepository)
+
 func TestFindLastCommitByDate(t *testing.T) {
-	commitRepository := new(mocks.CommitRepository)
 	commitRepository.On("FindMostRecentCommit").Return(testCommits[0], nil)
 	commit, err := commitRepository.FindMostRecentCommit()
 	assert.Nil(t, err)
 	assert.NotNil(t, commit)
 }
 
+// TODO: complete test
 func TestFindTopCommitAuthors(t *testing.T) {
-	commitRepository := new(mocks.CommitRepository)
 	commitRepository.On("FindMostRecentCommit").Return(testCommits[0], nil)
 }

@@ -19,7 +19,7 @@ func TestFetchCommitData(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), func(request *http.Request) (*http.Response, error) {
-		res, err := httpmock.NewJsonResponse(http.StatusOK, githubCommitResponse)
+		res, err := httpmock.NewJsonResponse(http.StatusOK, loadTestRepositories())
 		return res, err
 	})
 	data, err := commitMonitorService.FetchCommitData(0)
