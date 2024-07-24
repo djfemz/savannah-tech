@@ -2,7 +2,6 @@ package test
 
 import (
 	"github.com/djfemz/savannahTechTask/api/mocks"
-	"github.com/djfemz/savannahTechTask/api/models"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -27,23 +26,8 @@ func TestFindLastCommitByDate(t *testing.T) {
 }
 
 func TestFindTopCommitAuthors(t *testing.T) {
-	commitRepository.On("FindTopCommitAuthors", mock.Anything).Return(loadTestAuthors(), nil)
+	commitRepository.On("FindTopCommitAuthors", mock.Anything).Return(loadTestAuthorData(), nil)
 	authors, err := commitRepository.FindTopCommitAuthors(3)
 	assert.Nil(t, err)
-	assert.Equal(t, 2, len(authors))
-}
-
-func loadTestAuthors() []*models.Author {
-	return []*models.Author{
-		{
-			ID:       1,
-			Email:    "test@author.com",
-			Username: "author",
-		},
-		{
-			ID:       2,
-			Email:    "test@author1.com",
-			Username: "author1",
-		},
-	}
+	assert.Equal(t, len(loadTestAuthorData()), len(authors))
 }

@@ -2,6 +2,7 @@ package test
 
 import (
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
+	"github.com/djfemz/savannahTechTask/api/models"
 	"github.com/djfemz/savannahTechTask/api/utils"
 	"log"
 	"os"
@@ -17,6 +18,27 @@ func loadTestGithubRepositoryMetaData() *dtos.GithubRepositoryResponse {
 		Private:  false,
 	}
 
+}
+
+func loadTestAuthorData() []*models.Author {
+	return []*models.Author{
+		{
+			Username: "author1",
+			Email:    "author1@email.com",
+			Commits:  40,
+		},
+
+		{
+			Username: "author2",
+			Email:    "author2@email.com",
+			Commits:  45,
+		},
+		{
+			Username: "author3",
+			Email:    "author3@email.com",
+			Commits:  56,
+		},
+	}
 }
 
 func loadTestGithubCommitData() []*dtos.GitHubCommitResponse {
@@ -72,6 +94,27 @@ func loadTestGithubCommitData() []*dtos.GitHubCommitResponse {
 					Date:  time.Now(),
 				},
 				Message: "refactored services",
+			},
+		},
+	}
+}
+
+func loadTestCommits() []*models.Commit {
+	return []*models.Commit{
+		{
+			ID:      33,
+			Message: "initial commit",
+			Author: &models.Author{
+				ID:    44,
+				Email: "author@email.com",
+			},
+		},
+		{
+			ID:      35,
+			Message: "refactored repo",
+			Author: &models.Author{
+				ID:    44,
+				Email: "author1@email.com",
 			},
 		},
 	}
