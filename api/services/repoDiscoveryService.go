@@ -1,11 +1,13 @@
 package services
 
 import (
+	"log"
+	"os"
+	"time"
+
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"github.com/djfemz/savannahTechTask/api/models"
 	"github.com/robfig/cron/v3"
-	"log"
-	"os"
 )
 
 type RepoDiscoveryService struct {
@@ -33,6 +35,7 @@ func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData() (githubRep
 func (repoDiscoveryService *RepoDiscoveryService) StartJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
+		time.Sleep(3 * time.Second)
 		go repoDiscoveryService.fetch()
 	})
 	if err != nil {

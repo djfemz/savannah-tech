@@ -57,7 +57,11 @@ func (commitMonitorService *CommitMonitorService) StartJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
 		log.Println("task in commit monitor service")
-		go commitMonitorService.fetch(0)
+		for counter := 1; counter < 250000; counter++ {
+			time.Sleep(3 * time.Second)
+			go commitMonitorService.fetch(counter)
+		}
+		
 
 	})
 	if err != nil {

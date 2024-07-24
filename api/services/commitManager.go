@@ -1,13 +1,13 @@
 package services
 
 import (
+	"log"
+	"os"
+	"time"
+
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"github.com/djfemz/savannahTechTask/api/mappers"
 	"github.com/robfig/cron/v3"
-	"log"
-	"os"
-	"sync"
-	"time"
 )
 
 type CommitManager struct {
@@ -30,12 +30,14 @@ func (commitManager *CommitManager) FetchPageOfCommitDataFrom(page uint64, since
 	return githubCommitResponses, nil
 }
 
-var wg sync.WaitGroup
-
 func (commitManager *CommitManager) StartJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
-		go commitManager.fetch(0)
+		time.Sleep(3 * time.Second)
+		for counter := 1; counter < 250000; counter++ {
+			go commitManager.fetch(counter)
+		}
+
 	})
 	if err != nil {
 		log.Println("Error creating job: ", err)
