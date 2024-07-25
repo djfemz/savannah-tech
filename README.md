@@ -1,6 +1,6 @@
 
 # Project Title
-SavannahTech Recruitment Task
+SavannahTech
 
 
 ## Environment Variables
@@ -19,9 +19,8 @@ To run this project, you will need to add the following environment variables to
 
 ## Getting Started
 To Run the project, navigate to the projects root directory and execute the following commands:
-1. 'docker network create fullstack'
-2. 'docker-compose up --build' to build the application.
-3. 'docker-compose run api' to start the application.
+1. 'docker-compose up --build' to build the application.
+
 
 ## Testing
 - The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. To run the tests, run the command:

@@ -1,10 +1,16 @@
 version: "3.9"
+networks:
+    fullstack:
+      driver: bridge
+
 services:
   api:
     build: .
     container_name: api_c
     networks:
       - fullstack
+    depends_on:
+      - postgres
     env_file:
       - .env
     ports:
@@ -25,11 +31,6 @@ services:
     networks:
       - fullstack
 
-    
 volumes:
     database_dockerizing:
     api_volume:
-
-networks:
-    fullstack:
-      driver: bridge
