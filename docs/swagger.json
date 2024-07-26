@@ -10,10 +10,10 @@
         },
         "version": "1"
     },
-    "host": "localhost:8080",
+    "host": "localhost:8082",
     "basePath": "/api/v1",
     "paths": {
-        "/commits": {
+        "/commits/authors/top": {
             "get": {
                 "description": "Get top N commit Authors where N is a number",
                 "consumes": [
@@ -65,7 +65,7 @@
         },
         "/commits/since": {
             "get": {
-                "description": "Get all commits starting from the date supplied",
+                "description": "Get all commits starting from the date supplied in the format (MM-DD-YYYY)",
                 "consumes": [
                     "application/json"
                 ],

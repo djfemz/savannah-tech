@@ -4,9 +4,10 @@ import (
 	"github.com/djfemz/savannahTechTask/api/mocks"
 	"github.com/djfemz/savannahTechTask/api/models"
 
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
 )
 
 var testCommits = []*models.Commit{{ID: 1, RepoName: "test repo", CommitHash: "abc123"},

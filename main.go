@@ -17,7 +17,7 @@ import (
 var err error
 
 func init() {
-	err = godotenv.Load("example.env")
+	err = godotenv.Load(".env.example")
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}
@@ -37,7 +37,7 @@ var commitMonitorService *services.CommitMonitorService
 // @contact.url https://github.com/djfemz
 // @contact.email oladejifemi00@gmail.com
 
-// @host localhost:8080
+// @host localhost:8082
 // @BasePath /api/v1
 func main() {
 	configureAppComponents()
@@ -46,7 +46,7 @@ func main() {
 	go commitMonitorService.StartJob()
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.GET("/api/v1/commits", commitController.GetTopCommitAuthors)
+	router.GET("/api/v1/commits/authors/top", commitController.GetTopCommitAuthors)
 	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
 	router.GET("/api/v1/commits/since", commitController.GetCommitsByDateSince)
 	port := os.Getenv("SERVER_PORT")

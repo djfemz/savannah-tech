@@ -27,17 +27,14 @@ func (commitManager *CommitManager) FetchPageOfCommitDataFrom(page uint64, since
 	if err != nil {
 		return nil, err
 	}
+	log.Println("len of data: ", githubCommitResponses)
 	return githubCommitResponses, nil
 }
 
 func (commitManager *CommitManager) StartJob() {
 	job := cron.New()
 	_, err := job.AddFunc("* * */1 * *", func() {
-		time.Sleep(3 * time.Second)
-		for counter := 1; counter < 250000; counter++ {
-			go commitManager.fetch(counter)
-		}
-
+		go commitManager.fetch(0)
 	})
 	if err != nil {
 		log.Println("Error creating job: ", err)

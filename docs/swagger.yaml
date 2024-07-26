@@ -28,7 +28,7 @@ definitions:
       url:
         type: string
     type: object
-host: localhost:8080
+host: localhost:8082
 info:
   contact:
     email: oladejifemi00@gmail.com
@@ -38,39 +38,6 @@ info:
   title: Documenting API (SavannahTech Task)
   version: "1"
 paths:
-  /commits:
-    get:
-      consumes:
-      - application/json
-      description: Get top N commit Authors where N is a number
-      parameters:
-      - description: Number of Authors
-        in: query
-        name: size
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dtos.AuthorResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/appErrors.authorsNotFound'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/appErrors.authorsNotFound'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/appErrors.authorsNotFound'
-      summary: Get top N commit Authors
-      tags:
-      - Authors
   /commits/{repo}:
     get:
       consumes:
@@ -104,11 +71,44 @@ paths:
       summary: Get commits for repository
       tags:
       - Commits
+  /commits/authors/top:
+    get:
+      consumes:
+      - application/json
+      description: Get top N commit Authors where N is a number
+      parameters:
+      - description: Number of Authors
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.AuthorResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appErrors.authorsNotFound'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/appErrors.authorsNotFound'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appErrors.authorsNotFound'
+      summary: Get top N commit Authors
+      tags:
+      - Authors
   /commits/since:
     get:
       consumes:
       - application/json
-      description: Get all commits starting from the date supplied
+      description: Get all commits starting from the date supplied in the format (MM-DD-YYYY)
       parameters:
       - description: date
         in: query

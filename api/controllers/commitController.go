@@ -26,7 +26,7 @@ func NewCommitController(commitService *services.CommitService) *CommitControlle
 // @Failure      400  {object}  appErrors.authorsNotFound
 // @Failure      404  {object}  appErrors.authorsNotFound
 // @Failure      500  {object}  appErrors.authorsNotFound
-// @Router       /commits [get]
+// @Router       /commits/authors/top [get]
 func (commitController *CommitController) GetTopCommitAuthors(ctx *gin.Context) {
 	size, _ := utils.ExtractParamFromRequest(utils.SIZE, ctx)
 	commits, err := commitController.CommitService.GetTopCommitAuthors(int(size))

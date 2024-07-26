@@ -47,3 +47,4 @@ func TestShouldGetCommitsForRepository(t *testing.T) {
 	assert.Equal(t, http.StatusOK, writer.Code)
 	assert.NotNil(t, writer.Body)
 }
+

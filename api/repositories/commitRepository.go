@@ -1,11 +1,12 @@
 package repositories
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/djfemz/savannahTechTask/api/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"strconv"
-	"time"
 )
 
 type CommitRepository interface {
@@ -46,7 +47,7 @@ func (appCommitRepository *AppCommitRepository) FindById(id uint) (*models.Commi
 }
 
 func (appCommitRepository *AppCommitRepository) FindAllByDateSince(since *time.Time) (commits []*models.Commit, err error) {
-	if err := appCommitRepository.Preload(clause.Associations).Where("date BETWEEN ? AND ?", since, time.Now()).Find(&commits).Error; err != nil {
+	if err := appCommitRepository.Preload(clause.Associations).Where("created_at BETWEEN ? AND ?", since, time.Now()).Find(&commits).Error; err != nil {
 		return nil, err
 	}
 	return

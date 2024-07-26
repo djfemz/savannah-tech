@@ -19,7 +19,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/commits": {
+        "/commits/authors/top": {
             "get": {
                 "description": "Get top N commit Authors where N is a number",
                 "consumes": [
@@ -71,7 +71,7 @@ const docTemplate = `{
         },
         "/commits/since": {
             "get": {
-                "description": "Get all commits starting from the date supplied",
+                "description": "Get all commits starting from the date supplied in the format (MM-DD-YYYY)",
                 "consumes": [
                     "application/json"
                 ],
@@ -220,7 +220,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1",
-	Host:             "localhost:8080",
+	Host:             "localhost:8082",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Documenting API (SavannahTech Task)",

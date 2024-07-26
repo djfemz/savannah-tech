@@ -7,6 +7,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 EXPOSE 8080
+
 RUN go build -v -o main .
 
 CMD ["/app/main"]
