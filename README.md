@@ -50,7 +50,7 @@ Golang
 - Get Top N commits
 **Request Sample**
 ```shell
-curl --location 'localhost:8082/commits?size=3' \
+curl --location 'localhost:8082/commits/authors/top?size=3' \
 --header 'Content-Type: application/json' \'
 
 ```
