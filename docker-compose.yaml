@@ -6,7 +6,7 @@ networks:
 services:
   api:
     build: .
-    container_name: api_c
+    container_name: api
     networks:
       - fullstack
     depends_on:
