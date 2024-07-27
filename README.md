@@ -37,8 +37,12 @@ To Run the project, navigate to the projects root directory and do the following
 
 ## Testing
 - The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. To run the tests, navigate to the projects root directory and execute one of the following commands:
+__Go:__ 
 - go test .\services .\repositories .\controllers
-- 'docker-compose up --build'
+__Docker:__ 
+- Running 'docker-compose up --build' command to build the project with docker will execute all unit and 
+integration tests in the project.
+
 ## Technologies Used
 Golang
 ## API Documentation
