@@ -44,12 +44,10 @@ func getData(url string, page uint64, start *time.Time) (resp *http.Response, er
 
 	addHeadersToRequest(req, start, page)
 
-	log.Println("req ", req)
 	resp, err = client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	log.Println("resp: ", resp)
 
 	return resp, err
 }
@@ -75,7 +73,10 @@ func (commitMonitorService *CommitMonitorService) fetch(counter int) {
 
 	if data != nil && len(*data) > 0 {
 		commits := mappers.MapToCommits(data)
-		commitMonitorService.repository.SaveAll(commits)
+		err = commitMonitorService.repository.SaveAll(commits)
+		if err != nil {
+			log.Println("error saving commits: ", err)
+		}
 	}
 }
 
@@ -92,7 +93,6 @@ func addHeadersToRequest(req *http.Request, start *time.Time, page uint64) {
 	query.Add("Accept", "application/vnd.github+json")
 	query.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("AUTH_TOKEN")))
 	req.URL.RawQuery = query.Encode()
-	log.Println("req: ", req)
 }
 
 func extractDataInto[t any](resp *http.Response, into *t) (*t, error) {

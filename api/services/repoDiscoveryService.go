@@ -48,7 +48,7 @@ func (repoDiscoveryService *RepoDiscoveryService) StartJob() {
 func (repoDiscoveryService *RepoDiscoveryService) fetch() {
 	githubRepository, err := repoDiscoveryService.FetchRepoMetaData()
 	if err != nil {
-		log.Println("error: ", err)
+		log.Println("error fetching repo metadata: ", err)
 		return
 	}
 	auxiliaryRepository := models.NewGithubAuxiliaryRepository(githubRepository)

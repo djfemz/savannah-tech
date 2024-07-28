@@ -27,7 +27,6 @@ func (commitManager *CommitManager) FetchPageOfCommitDataFrom(page uint64, since
 	if err != nil {
 		return nil, err
 	}
-	log.Println("len of data: ", githubCommitResponses)
 	return githubCommitResponses, nil
 }
 
