@@ -1,19 +1,19 @@
 # SavannahTech
 
 ## Description
-This is a project that retrieves commit data about a specified github repository, the application provides three main features for retrieving repository information. 
+This is a project that retrieves commit data from a specified GitHub repository, the application provides three main features for retrieving repository information. 
 ## Key Features
 
 &nbsp;
-__Get Top N Commit Authors__: This feature returns the top N Committers for the given Github Repository.\
+__Get Top N Commit Authors__: This feature returns the top N Committers for the given GitHub Repository.\
 &nbsp;
-__Get All Commits for Repository__: This feature retrieves all commits for the given Github Repository. \
+__Get All Commits for Repository__: This feature retrieves all commits for the given GitHub Repository. \
 &nbsp;
 __Get Commits From a given Date__: This feature retrieves commits from the given date to the current time. 
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your example.env file
+To run this project, you will need to provide values for the following environment variables in the .env.example file
 
 `DATABASE_HOST`
 `DATABASE_USERNAME`
@@ -22,7 +22,7 @@ To run this project, you will need to add the following environment variables to
 `DATABASE_PORT`
 `REPO_OWNER`
 `REPO_NAME`
-`AUTH_TOKEN` (github access token)
+`AUTH_TOKEN` (GitHub access token)
 `FETCH_DATE_SINCE`(Format: MM-DD-YYYY)
 
 
@@ -130,7 +130,7 @@ curl -X 'GET' \
 ```
 
 #### GET http://localhost:8082/api/v1/commits
-- Get Commits for for specified repository
+- Get Commits for specified repository
 
 ```shell
 curl -X 'GET' \
