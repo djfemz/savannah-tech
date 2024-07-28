@@ -168,7 +168,7 @@ curl -X 'GET' \
 ]
 ```
 # Swagger Documentation
-The swagger documentation can be found here: 
+The swagger documentation can be found here after running the application: 
 http://localhost:8082/swagger-ui/index.html
 
 ## Acknowledgements
