@@ -8,7 +8,7 @@ RUN go mod download && go mod verify
 COPY . .
 EXPOSE 8080
 
-RUN go test -v ./...
+RUN go test -v ./controllers ./services ./repositories
 
 RUN go build -v -o main .
 

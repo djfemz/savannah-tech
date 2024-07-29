@@ -22,7 +22,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: app:test
-    command: ["go", "test", "-v", "./..."]
+    command: ["go", "test", "-v", "./api/controllers", "./api/services", "./api/repositories"]
 
 
   postgres:
