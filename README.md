@@ -36,9 +36,11 @@ To Run the project, navigate to the projects root directory and do the following
 3. Run 'docker-compose run api' to start the application.
 
 ## Testing
-- The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. To run the tests, navigate to the projects root directory and execute one of the following commands:
+- The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. To run the tests, navigate to the projects root directory and execute one of the following commands:\
+&nbsp;
 __Go:__ 
-- go test .\services .\repositories .\controllers
+- go test .\services .\repositories .\controllers\
+&nbsp;
 __Docker:__ 
 - Running 'docker-compose up --build' command to build the project with docker will execute all unit and 
 integration tests in the project.

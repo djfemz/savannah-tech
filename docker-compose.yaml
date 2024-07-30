@@ -14,7 +14,7 @@ services:
     depends_on:
       - postgres
     env_file:
-      - .env.example
+      - .env
     ports:
       - '8082:8082'
   test:
@@ -29,7 +29,7 @@ services:
     image: postgres:14-alpine
     container_name: "db"
     ports:
-      - "8081:5432"
+      - "8085:5432"
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}

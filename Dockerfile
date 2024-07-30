@@ -1,4 +1,4 @@
-FROM golang:1.20 AS builder
+FROM golang:1.20
 
 WORKDIR /app
 
@@ -6,16 +6,11 @@ COPY go.mod ./
 RUN go mod download && go mod verify
 
 COPY . .
-EXPOSE 8080
+EXPOSE 8082
 
-RUN go test -v ./controllers ./services ./repositories
-
+RUN go test -v ./api/controllers ./api/services ./api/repositories
 RUN go build -v -o main .
 
-FROM debian:bullseye-slim
 
-WORKDIR /root/
-
-COPY --from=builder /app/main .
 
 CMD ["/app/main"]
