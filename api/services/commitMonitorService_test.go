@@ -24,7 +24,7 @@ func TestFetchCommitData(t *testing.T) {
 		res, err := httpmock.NewJsonResponse(http.StatusOK, utils.LoadTestGithubCommitData())
 		return res, err
 	})
-	data, err := commitMonitorService.FetchCommitData(0)
+	data, err := commitMonitorService.FetchCommitData()
 	assert.Nil(t, err)
 	assert.NotEmpty(t, data)
 }

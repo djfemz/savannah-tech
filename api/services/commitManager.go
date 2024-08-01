@@ -18,12 +18,18 @@ func NewCommitManager(commitService *CommitService) *CommitManager {
 }
 
 func (commitManager *CommitManager) FetchCommitDataFrom(since time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
+	log.Printf("[info: start fetch commit data in %s ]", "commit manager")
 	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), &since)
 	if err != nil {
+		log.Printf("[error: fetch commit data in %s failed]", "commit manager")
 		return nil, err
 	}
+
 	githubCommitResponses, err = extractDataInto(resp, githubCommitResponses)
+	log.Println("response: ", githubCommitResponses)
 	if err != nil {
+		log.Printf("[info: response data:  %v]", resp)
+		log.Printf("[error: failed to extract data from response in %s error: %s]", "commit manager", err.Error())
 		return nil, err
 	}
 	return githubCommitResponses, nil

@@ -30,7 +30,7 @@ func TestFetchCommitDataByTime(t *testing.T) {
 		return res, err
 	})
 	since, _ := time.Parse(os.Getenv("ISO_TIME_FORMAT"), os.Getenv("FETCH_DATE_SINCE"))
-	data, _ := commitManager.FetchCommitDataFrom(1, since)
+	data, _ := commitManager.FetchCommitDataFrom(since)
 	expectedJsonResponse, _ := json.Marshal(response)
 	err = json.Unmarshal(expectedJsonResponse, &expected)
 	assert.Nil(t, err)

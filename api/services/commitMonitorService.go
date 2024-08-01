@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/djfemz/savannahTechTask/api/utils"
 	"log"
 	"net/http"
 	"os"
@@ -79,13 +80,13 @@ func addHeadersToRequest(req *http.Request, start *time.Time) {
 	if start != nil {
 		query.Add("since", start.String())
 	}
-	query.Add("Accept", "application/vnd.github+json")
+	query.Add("Accept", utils.ACCEPT_HEADER_VALUE)
 	query.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("AUTH_TOKEN")))
 	req.URL.RawQuery = query.Encode()
 }
 
 func extractDataInto[t any](resp *http.Response, into *t) (*t, error) {
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, appErrors.NewCommitNotFoundError()
 	}
 	err := json.NewDecoder(resp.Body).Decode(&into)

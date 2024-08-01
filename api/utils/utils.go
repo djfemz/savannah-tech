@@ -10,12 +10,13 @@ import (
 )
 
 var (
-	RFC_TIME_SUFFIX = "Z"
-	REPO            = "repo"
-	SIZE            = "size"
-	DATABASE_PORT   = "DATABASE_PORT"
-	SINCE           = "since"
-	EMPTY_STRING    = ""
+	RFC_TIME_SUFFIX     = "Z"
+	REPO                = "repo"
+	SIZE                = "size"
+	DATABASE_PORT       = "DATABASE_PORT"
+	SINCE               = "since"
+	EMPTY_STRING        = ""
+	ACCEPT_HEADER_VALUE = "application/vnd.github+json"
 )
 
 func ExtractParamFromRequest(paramName string, ctx *gin.Context) (uint64, error) {

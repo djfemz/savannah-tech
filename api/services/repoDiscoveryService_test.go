@@ -29,7 +29,7 @@ func TestFetchRepoMetaData(t *testing.T) {
 		res, err := httpmock.NewJsonResponse(http.StatusOK, testGithubRepositoryMetaData)
 		return res, err
 	})
-	data, err := repoDiscoveryService.FetchRepoMetaData()
+	data, err := repoDiscoveryService.FetchRepoMetaData(nil)
 	expectedJsonResponse, _ := json.Marshal(testGithubRepositoryMetaData)
 	err = json.Unmarshal(expectedJsonResponse, &expected)
 	assert.Nil(t, err)
