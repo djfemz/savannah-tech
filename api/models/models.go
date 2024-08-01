@@ -29,7 +29,8 @@ type Author struct {
 	Commits  uint
 }
 
-type GithubAuxiliaryRepository struct {
+// TODO: create ERD for relationship between commits and repository
+type GithubRepository struct {
 	ID             uint
 	Name           string
 	Description    string
@@ -73,8 +74,8 @@ func NewCommitResponse(commit *Commit) (commitResponse *dtos.CommitResponse) {
 	return commitResponse
 }
 
-func NewGithubAuxiliaryRepository(response *dtos.GithubRepositoryResponse) *GithubAuxiliaryRepository {
-	return &GithubAuxiliaryRepository{
+func NewGithubRepository(response *dtos.GithubRepositoryResponse) *GithubRepository {
+	return &GithubRepository{
 		Name:           response.Name,
 		Description:    response.Description,
 		URL:            response.URL,
@@ -88,7 +89,7 @@ func NewGithubAuxiliaryRepository(response *dtos.GithubRepositoryResponse) *Gith
 	}
 }
 
-func NewRepositoryResponse(appRepository *GithubAuxiliaryRepository) *dtos.RepositoryResponse {
+func NewRepositoryResponse(appRepository *GithubRepository) *dtos.RepositoryResponse {
 	return &dtos.RepositoryResponse{
 		Name:           appRepository.Name,
 		RepoId:         appRepository.RepoId,

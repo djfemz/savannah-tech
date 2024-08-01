@@ -34,15 +34,15 @@ func (_m *GithubAuxiliaryRepository) ExistsByName(name string) (bool, error) {
 }
 
 // FindById provides a mock function with given fields: id
-func (_m *GithubAuxiliaryRepository) FindById(id uint) (*models.GithubAuxiliaryRepository, error) {
+func (_m *GithubAuxiliaryRepository) FindById(id uint) (*models.GithubRepository, error) {
 	ret := _m.Called(id)
 
-	var r0 *models.GithubAuxiliaryRepository
-	if rf, ok := ret.Get(0).(func(uint) *models.GithubAuxiliaryRepository); ok {
+	var r0 *models.GithubRepository
+	if rf, ok := ret.Get(0).(func(uint) *models.GithubRepository); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.GithubAuxiliaryRepository)
+			r0 = ret.Get(0).(*models.GithubRepository)
 		}
 	}
 
@@ -57,15 +57,15 @@ func (_m *GithubAuxiliaryRepository) FindById(id uint) (*models.GithubAuxiliaryR
 }
 
 // FindByName provides a mock function with given fields: name
-func (_m *GithubAuxiliaryRepository) FindByName(name string) (*models.GithubAuxiliaryRepository, error) {
+func (_m *GithubAuxiliaryRepository) FindByName(name string) (*models.GithubRepository, error) {
 	ret := _m.Called(name)
 
-	var r0 *models.GithubAuxiliaryRepository
-	if rf, ok := ret.Get(0).(func(string) *models.GithubAuxiliaryRepository); ok {
+	var r0 *models.GithubRepository
+	if rf, ok := ret.Get(0).(func(string) *models.GithubRepository); ok {
 		r0 = rf(name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.GithubAuxiliaryRepository)
+			r0 = ret.Get(0).(*models.GithubRepository)
 		}
 	}
 
@@ -80,20 +80,20 @@ func (_m *GithubAuxiliaryRepository) FindByName(name string) (*models.GithubAuxi
 }
 
 // Save provides a mock function with given fields: repository
-func (_m *GithubAuxiliaryRepository) Save(repository *models.GithubAuxiliaryRepository) (*models.GithubAuxiliaryRepository, error) {
+func (_m *GithubAuxiliaryRepository) Save(repository *models.GithubRepository) (*models.GithubRepository, error) {
 	ret := _m.Called(repository)
 
-	var r0 *models.GithubAuxiliaryRepository
-	if rf, ok := ret.Get(0).(func(*models.GithubAuxiliaryRepository) *models.GithubAuxiliaryRepository); ok {
+	var r0 *models.GithubRepository
+	if rf, ok := ret.Get(0).(func(*models.GithubRepository) *models.GithubRepository); ok {
 		r0 = rf(repository)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.GithubAuxiliaryRepository)
+			r0 = ret.Get(0).(*models.GithubRepository)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*models.GithubAuxiliaryRepository) error); ok {
+	if rf, ok := ret.Get(1).(func(*models.GithubRepository) error); ok {
 		r1 = rf(repository)
 	} else {
 		r1 = ret.Error(1)
@@ -103,20 +103,20 @@ func (_m *GithubAuxiliaryRepository) Save(repository *models.GithubAuxiliaryRepo
 }
 
 // UpdateByName provides a mock function with given fields: name, repository
-func (_m *GithubAuxiliaryRepository) UpdateByName(name string, repository *models.GithubAuxiliaryRepository) (*models.GithubAuxiliaryRepository, error) {
+func (_m *GithubAuxiliaryRepository) UpdateByName(name string, repository *models.GithubRepository) (*models.GithubRepository, error) {
 	ret := _m.Called(name, repository)
 
-	var r0 *models.GithubAuxiliaryRepository
-	if rf, ok := ret.Get(0).(func(string, *models.GithubAuxiliaryRepository) *models.GithubAuxiliaryRepository); ok {
+	var r0 *models.GithubRepository
+	if rf, ok := ret.Get(0).(func(string, *models.GithubRepository) *models.GithubRepository); ok {
 		r0 = rf(name, repository)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.GithubAuxiliaryRepository)
+			r0 = ret.Get(0).(*models.GithubRepository)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, *models.GithubAuxiliaryRepository) error); ok {
+	if rf, ok := ret.Get(1).(func(string, *models.GithubRepository) error); ok {
 		r1 = rf(name, repository)
 	} else {
 		r1 = ret.Error(1)

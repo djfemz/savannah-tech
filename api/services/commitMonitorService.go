@@ -6,27 +6,29 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/djfemz/savannahTechTask/api/appErrors"
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"github.com/djfemz/savannahTechTask/api/mappers"
-	"github.com/robfig/cron/v3"
 )
 
 type CommitMonitorService struct {
 	*CommitService
 }
 
-func NewCommitMonitorService(commitRepository *CommitService) *CommitMonitorService {
+func NewCommitMonitorService(commitService *CommitService) *CommitMonitorService {
 	return &CommitMonitorService{
-		commitRepository,
+		commitService,
 	}
 }
 
-func (commitMonitorService *CommitMonitorService) FetchCommitData(page uint64) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
-	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), page, nil)
+func (commitMonitorService *CommitMonitorService) FetchCommitData() (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
+	commit, err := commitMonitorService.GetMostRecentCommit()
+	if err != nil {
+		log.Printf("[Error: %v]", err)
+	}
+	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), &commit.Date)
 	if err != nil {
 		log.Println("error sending request: ", err)
 		return nil, err
@@ -35,38 +37,30 @@ func (commitMonitorService *CommitMonitorService) FetchCommitData(page uint64) (
 	return githubCommitResponses, nil
 }
 
-func getData(url string, page uint64, start *time.Time) (resp *http.Response, err error) {
+func getData(url string, start *time.Time) (resp *http.Response, err error) {
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	addHeadersToRequest(req, start, page)
+	addHeadersToRequest(req, start)
 
 	resp, err = client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-
+	// TODO: queue up the failed requests for retry
 	return resp, err
 }
 
 func (commitMonitorService *CommitMonitorService) StartJob() {
-	job := cron.New()
-	_, err := job.AddFunc("* * */1 * *", func() {
-		log.Println("task in commit monitor service")
-		go commitMonitorService.fetch(0)
-	})
-	if err != nil {
-		log.Println("Error creating job: ", err)
-	}
-	log.Println("Starting new task...")
-	job.Start()
+	log.Println("Repo monitoring started...")
+	commitMonitorService.fetch()
 }
 
-func (commitMonitorService *CommitMonitorService) fetch(counter int) {
-	data, err := commitMonitorService.FetchCommitData(uint64(counter))
+func (commitMonitorService *CommitMonitorService) fetch() {
+	data, err := commitMonitorService.FetchCommitData()
 	if err != nil {
 		log.Println("Error fetching commits: ", err)
 	}
@@ -80,13 +74,8 @@ func (commitMonitorService *CommitMonitorService) fetch(counter int) {
 	}
 }
 
-func addHeadersToRequest(req *http.Request, start *time.Time, page uint64) {
+func addHeadersToRequest(req *http.Request, start *time.Time) {
 	query := req.URL.Query()
-	if page > 0 {
-		query.Add("page", strconv.FormatUint(page, 10))
-		query.Add("per_page", os.Getenv("MAX_COMMITS_PER_PAGE"))
-	}
-
 	if start != nil {
 		query.Add("since", start.String())
 	}

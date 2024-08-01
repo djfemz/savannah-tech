@@ -4,9 +4,11 @@ import (
 	"github.com/djfemz/savannahTechTask/api/controllers"
 	"github.com/djfemz/savannahTechTask/api/repositories"
 	"github.com/djfemz/savannahTechTask/api/services"
+	"github.com/djfemz/savannahTechTask/api/utils"
 	_ "github.com/djfemz/savannahTechTask/docs"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/robfig/cron/v3"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
@@ -17,7 +19,7 @@ import (
 var err error
 
 func init() {
-	err = godotenv.Load(".env.example")
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}
@@ -29,6 +31,8 @@ var commitService *services.CommitService
 var repoDiscoveryService *services.RepoDiscoveryService
 var commitManager *services.CommitManager
 var commitMonitorService *services.CommitMonitorService
+var doneChannel chan bool
+var errorChannel chan any
 
 // @title Documenting API (SavannahTech Task)
 // @version 1
@@ -40,16 +44,18 @@ var commitMonitorService *services.CommitMonitorService
 // @host localhost:8082
 // @BasePath /api/v1
 func main() {
-	configureAppComponents()
-	go repoDiscoveryService.StartJob()
-	go commitManager.StartJob()
-	go commitMonitorService.StartJob()
+	if os.Getenv("REPO_NAME") == utils.EMPTY_STRING {
+		log.Println("Repo name is empty, provide repository name to start pulling data")
+	} else {
+		pullData()
+	}
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/api/v1/commits/authors/top", commitController.GetTopCommitAuthors)
 	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
 	router.GET("/api/v1/commits/since", commitController.GetCommitsByDateSince)
 	port := os.Getenv("SERVER_PORT")
+	log.Println("port: ", port)
 	err = router.Run(":" + port)
 	if err != nil {
 		log.Fatal("Failed to start server on port: ", port)
@@ -69,4 +75,31 @@ func configureAppComponents() {
 	commitManager = services.NewCommitManager(commitService)
 	commitMonitorService = services.NewCommitMonitorService(commitService)
 	commitController = controllers.NewCommitController(commitService)
+}
+
+func pullData() {
+	job := cron.New()
+	configureAppComponents()
+	doneChannel = make(chan bool)
+	errorChannel = make(chan any)
+	go repoDiscoveryService.StartJob(doneChannel, errorChannel)
+	select {
+	case status := <-doneChannel:
+		log.Println("[info: finished fetching repository meta data]", status)
+		go commitManager.StartJob()
+		break
+	case errr := <-errorChannel:
+		log.Println("[error in pulldata:  failed to fetch repository data: ", errr, " ]")
+		break
+	}
+
+	id, err := job.AddFunc("@hourly", func() {
+		log.Println("about to start monitoring repo")
+		commitMonitorService.StartJob()
+	})
+	if err != nil {
+		log.Printf("[Error: starting task with id: %d. Failed with error: %v", id, err)
+	}
+	log.Println("registered job to run hourly")
+
 }

@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-var testGithubRepository = &models.GithubAuxiliaryRepository{
+var testGithubRepository = &models.GithubRepository{
 	Name:        "test1",
 	Description: "test description",
 	RepoId:      2334,

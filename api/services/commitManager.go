@@ -7,7 +7,6 @@ import (
 
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"github.com/djfemz/savannahTechTask/api/mappers"
-	"github.com/robfig/cron/v3"
 )
 
 type CommitManager struct {
@@ -18,8 +17,8 @@ func NewCommitManager(commitService *CommitService) *CommitManager {
 	return &CommitManager{commitService}
 }
 
-func (commitManager *CommitManager) FetchPageOfCommitDataFrom(page uint64, since time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
-	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), page, &since)
+func (commitManager *CommitManager) FetchCommitDataFrom(since time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
+	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), &since)
 	if err != nil {
 		return nil, err
 	}
@@ -31,20 +30,12 @@ func (commitManager *CommitManager) FetchPageOfCommitDataFrom(page uint64, since
 }
 
 func (commitManager *CommitManager) StartJob() {
-	job := cron.New()
-	_, err := job.AddFunc("* * */1 * *", func() {
-		go commitManager.fetch(0)
-	})
-	if err != nil {
-		log.Println("Error creating job: ", err)
-	}
-	log.Println("Starting new task...")
-	job.Start()
+	go commitManager.fetch()
 }
 
-func (commitManager *CommitManager) fetch(page int) {
+func (commitManager *CommitManager) fetch() {
 	since, _ := time.Parse("01-02-2006", os.Getenv("FETCH_DATE_SINCE"))
-	data, err := commitManager.FetchPageOfCommitDataFrom(uint64(page), since)
+	data, err := commitManager.FetchCommitDataFrom(since)
 	if err != nil {
 		log.Println("Error fetching commits: ", err)
 	}

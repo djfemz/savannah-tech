@@ -1,13 +1,10 @@
 package services
 
 import (
-	"log"
-	"os"
-	"time"
-
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"github.com/djfemz/savannahTechTask/api/models"
-	"github.com/robfig/cron/v3"
+	"log"
+	"os"
 )
 
 type RepoDiscoveryService struct {
@@ -18,10 +15,11 @@ func NewRepoDiscoveryService(service *GithubRepositoryService) *RepoDiscoverySer
 	return &RepoDiscoveryService{service}
 }
 
-func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData() (githubRepository *dtos.GithubRepositoryResponse, err error) {
-	resp, err := getData(os.Getenv("GITHUB_API_REPOSITORY_URL"), 0, nil)
+func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData(errorChannel chan<- any) (githubRepository *dtos.GithubRepositoryResponse, err error) {
+	resp, err := getData(os.Getenv("GITHUB_API_REPOSITORY_URL"), nil)
 	if err != nil {
 		log.Println("Error fetching repository data: ", err)
+		errorChannel <- err
 		return nil, err
 	}
 	githubRepository, err = extractDataInto(resp, githubRepository)
@@ -32,28 +30,29 @@ func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData() (githubRep
 	return githubRepository, err
 }
 
-func (repoDiscoveryService *RepoDiscoveryService) StartJob() {
-	job := cron.New()
-	_, err := job.AddFunc("* * */1 * *", func() {
-		time.Sleep(3 * time.Second)
-		go repoDiscoveryService.fetch()
-	})
-	if err != nil {
-		log.Println("Error creating job: ", err)
-	}
+func (repoDiscoveryService *RepoDiscoveryService) StartJob(doneChannel chan<- bool, errorChannel chan<- any) {
+	go repoDiscoveryService.getRepoMetaData(doneChannel, errorChannel)
 	log.Println("Starting new task...")
-	job.Start()
 }
 
-func (repoDiscoveryService *RepoDiscoveryService) fetch() {
-	githubRepository, err := repoDiscoveryService.FetchRepoMetaData()
+func (repoDiscoveryService *RepoDiscoveryService) getRepoMetaData(doneChannel chan<- bool, errorChannel chan<- any) {
+	githubRepository, err := repoDiscoveryService.FetchRepoMetaData(errorChannel)
 	if err != nil {
+		errorChannel <- err
 		log.Println("error fetching repo metadata: ", err)
 		return
 	}
-	auxiliaryRepository := models.NewGithubAuxiliaryRepository(githubRepository)
+	auxiliaryRepository := models.NewGithubRepository(githubRepository)
 	if ok, _ := repoDiscoveryService.ExistsByName(githubRepository.Name); ok {
 		auxiliaryRepository, _ = repoDiscoveryService.UpdateByName(githubRepository.Name, auxiliaryRepository)
+		doneChannel <- true
+		return
 	}
-	auxiliaryRepository, _ = repoDiscoveryService.Save(auxiliaryRepository)
+	_, err = repoDiscoveryService.Save(auxiliaryRepository)
+	if err != nil {
+		log.Println("Error saving repository: ", err)
+		errorChannel <- err
+		return
+	}
+	doneChannel <- true
 }

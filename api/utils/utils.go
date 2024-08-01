@@ -15,6 +15,7 @@ var (
 	SIZE            = "size"
 	DATABASE_PORT   = "DATABASE_PORT"
 	SINCE           = "since"
+	EMPTY_STRING    = ""
 )
 
 func ExtractParamFromRequest(paramName string, ctx *gin.Context) (uint64, error) {
