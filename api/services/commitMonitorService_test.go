@@ -16,6 +16,7 @@ import (
 func TestFetchCommitData(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
 	commitRepository.On("SaveAll", mock.Anything).Return(nil)
+	commitRepository.On("FindMostRecentCommit").Return(utils.LoadTestCommits()[0], nil)
 	commitMonitorService := NewCommitMonitorService(NewCommitService(commitRepository))
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()

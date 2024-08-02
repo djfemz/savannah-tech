@@ -19,7 +19,7 @@ func NewCommitManager(commitService *CommitService) *CommitManager {
 
 func (commitManager *CommitManager) FetchCommitDataFrom(since time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
 	log.Printf("[info: start fetch commit data in %s ]", "commit manager")
-	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), &since)
+	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), 0, &since)
 	if err != nil {
 		log.Printf("[error: fetch commit data in %s failed]", "commit manager")
 		return nil, err

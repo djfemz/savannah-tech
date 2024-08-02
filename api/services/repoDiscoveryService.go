@@ -16,7 +16,7 @@ func NewRepoDiscoveryService(service *GithubRepositoryService) *RepoDiscoverySer
 }
 
 func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData(errorChannel chan<- any) (githubRepository *dtos.GithubRepositoryResponse, err error) {
-	resp, err := getData(os.Getenv("GITHUB_API_REPOSITORY_URL"), nil)
+	resp, err := getData(os.Getenv("GITHUB_API_REPOSITORY_URL"), 0, nil)
 	if err != nil {
 		log.Println("Error fetching repository data: ", err)
 		errorChannel <- err

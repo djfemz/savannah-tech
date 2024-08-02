@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/djfemz/savannahTechTask/api/appErrors"
@@ -29,29 +30,36 @@ func (commitMonitorService *CommitMonitorService) FetchCommitData() (githubCommi
 	if err != nil {
 		log.Printf("[Error: %v]", err)
 	}
-	resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), &commit.Date)
-	if err != nil {
-		log.Println("error sending request: ", err)
-		return nil, err
+	var resp *http.Response
+	for counter := 1; counter < 100000; counter++ {
+		resp, err = getData(os.Getenv("GITHUB_API_COMMIT_URL"), counter, &commit.Date)
+		if err != nil {
+			log.Println("error fetching data: ", err)
+			return nil, err
+		}
+		if resp.StatusCode == http.StatusForbidden {
+			time.Sleep(70 * time.Minute)
+		}
 	}
+
 	githubCommitResponses, _ = extractDataInto(resp, githubCommitResponses)
 	return githubCommitResponses, nil
 }
 
-func getData(url string, start *time.Time) (resp *http.Response, err error) {
+func getData(url string, page int, start *time.Time) (resp *http.Response, err error) {
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	addHeadersToRequest(req, start)
+	addHeadersToRequest(req, page, start)
 
 	resp, err = client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	// TODO: queue up the failed requests for retry
+	// TODO: queue up the failed requests for retries
 	return resp, err
 }
 
@@ -75,10 +83,13 @@ func (commitMonitorService *CommitMonitorService) fetch() {
 	}
 }
 
-func addHeadersToRequest(req *http.Request, start *time.Time) {
+func addHeadersToRequest(req *http.Request, page int, start *time.Time) {
 	query := req.URL.Query()
 	if start != nil {
 		query.Add("since", start.String())
+	}
+	if page > 0 {
+		query.Add("page", strconv.Itoa(page))
 	}
 	query.Add("Accept", utils.ACCEPT_HEADER_VALUE)
 	query.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("AUTH_TOKEN")))
