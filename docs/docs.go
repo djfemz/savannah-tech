@@ -19,6 +19,44 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/repositories/:repo": {
+            "get": {
+                "description": "Used to Add Repository to the application",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Repository"
+                ],
+                "summary": "Used to Add Repository to the application",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Number of Authors",
+                        "name": "repo",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.BaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/commits/authors/top": {
             "get": {
                 "description": "Get top N commit Authors where N is a number",
@@ -187,6 +225,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.BaseResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }

@@ -14,6 +14,16 @@ func NewRepoController() *RepoController {
 	return &RepoController{}
 }
 
+// AddRepoName AddRepository godoc
+// @Summary      Used to Add Repository to the application
+// @Description  Used to Add Repository to the application
+// @Tags         Repository
+// @Accept       json
+// @Produce      json
+// @Param        repo   path   int  true  "Number of Authors"
+// @Success      200  {object}  dtos.BaseResponse
+// @Failure      400  {object}  dtos.BaseResponse
+// @Router       /api/v1/repositories/:repo [get]
 func (repoController *RepoController) AddRepoName(ctx *gin.Context) {
 	repo := ctx.Param("repo")
 	if repo != "" {

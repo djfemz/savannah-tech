@@ -13,6 +13,11 @@ definitions:
       username:
         type: string
     type: object
+  dtos.BaseResponse:
+    properties:
+      message:
+        type: string
+    type: object
   dtos.CommitResponse:
     properties:
       author:
@@ -38,6 +43,31 @@ info:
   title: Documenting API (SavannahTech Task)
   version: "1"
 paths:
+  /api/v1/repositories/:repo:
+    get:
+      consumes:
+      - application/json
+      description: Used to Add Repository to the application
+      parameters:
+      - description: Number of Authors
+        in: path
+        name: repo
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.BaseResponse'
+      summary: Used to Add Repository to the application
+      tags:
+      - Repository
   /commits/{repo}:
     get:
       consumes:
