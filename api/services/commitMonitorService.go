@@ -49,7 +49,6 @@ func getData(url string, page int, start *time.Time) (resp *http.Response, err e
 	if err != nil {
 		return nil, err
 	}
-	// TODO: queue up the failed requests for retries
 	return resp, err
 }
 

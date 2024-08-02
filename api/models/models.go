@@ -31,7 +31,6 @@ type Author struct {
 	Commits  uint
 }
 
-// TODO: create ERD for relationship between commits and repository
 type GithubRepository struct {
 	ID             uint `gorm:"primaryKey"`
 	Name           string
