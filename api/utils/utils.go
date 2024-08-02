@@ -40,6 +40,7 @@ func GetCommitCount() string {
 	if err != nil {
 		log.Println("Error: ", err.Error())
 	}
+	req.Header.Add("Authorization", os.Getenv("AUTH_TOKEN"))
 	query := req.URL.Query()
 	query.Add("page", "1")
 	query.Add("per_page", "1")

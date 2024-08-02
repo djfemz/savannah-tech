@@ -34,8 +34,6 @@ func (commitManager *CommitManager) FetchCommitDataFrom(since *time.Time) (githu
 }
 
 func (commitManager *CommitManager) StartJob() {
-	since, _ := time.Parse("01-02-2006", os.Getenv("FETCH_DATE_SINCE"))
-	log.Println(since)
 	go commitManager.FetchCommitDataFrom(nil)
 }
 
@@ -61,17 +59,17 @@ func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dto
 			responses = append(responses, *githubCommitResponses...)
 			if responses != nil && len(responses) > 0 {
 
-				commits := mappers.MapToCommits(&responses, repository)
+				commits := mappers.MapToCommits(githubCommitResponses, repository)
 				if err = commitManager.repository.SaveAll(commits); err != nil {
 					log.Println("[ERROR:]\terror saving data: ", err)
 				}
 			}
+			log.Println("max records: ", MAX_RECORDS_PER_PAGE, "\ntotalCommitCount: ", totalCommitCount)
 			if counter*MAX_RECORDS_PER_PAGE >= totalCommitCount {
 				break
 			}
 			counter++
 		}
 	}
-	log.Println("api response: ", responses)
 	return &responses, nil
 }

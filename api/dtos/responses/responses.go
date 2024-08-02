@@ -188,6 +188,14 @@ type GitHubCommitResponse struct {
 	Author      `json:"author"`
 }
 
+type BaseResponse struct {
+	Message string `json:"message"`
+}
+
+func NewBaseResponse(message string) *BaseResponse {
+	return &BaseResponse{Message: message}
+}
+
 func NewGithubRepositoryResponse() *GithubRepositoryResponse {
 	return &GithubRepositoryResponse{}
 }

@@ -27,6 +27,7 @@ func init() {
 
 var db *gorm.DB
 var commitController *controllers.CommitController
+var repoController *controllers.RepoController
 var commitService *services.CommitService
 var repoDiscoveryService *services.RepoDiscoveryService
 var commitManager *services.CommitManager
@@ -54,6 +55,7 @@ func main() {
 	router.GET("/api/v1/commits/authors/top", commitController.GetTopCommitAuthors)
 	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
 	router.GET("/api/v1/commits/since", commitController.GetCommitsByDateSince)
+	router.GET("/api/v1/repositories/:repo", repoController.AddRepoName)
 	port := os.Getenv("SERVER_PORT")
 	log.Println("port: ", port)
 	err = router.Run(":" + port)
@@ -75,6 +77,7 @@ func configureAppComponents() {
 	commitManager = services.NewCommitManager(commitService, repoDiscoveryService)
 	commitMonitorService = services.NewCommitMonitorService(commitManager)
 	commitController = controllers.NewCommitController(commitService)
+	repoController = controllers.NewRepoController()
 }
 
 func pullData() {
@@ -83,26 +86,25 @@ func pullData() {
 	doneChannel = make(chan bool)
 	errorChannel = make(chan any)
 	exists, _ := repoDiscoveryService.ExistsByName(os.Getenv("REPO_NAME"))
-	log.Println("exists: ", exists)
 	if exists {
-		log.Println("commit monitor to start pulling data in 1 hour")
+		log.Println("[INFO:]\tcommit monitor to start pulling data in 1 hour")
 		id, err := job.AddFunc("@hourly", func() {
-			log.Println("about to start monitoring repo")
+			log.Println("[INFO:]\tabout to start monitoring repo")
 			commitMonitorService.StartJob()
 		})
 		if err != nil {
 			log.Printf("[Error: starting task with id: %d. Failed with error: %v", id, err)
 		}
-		log.Println("registered job to run hourly")
+		log.Println("[INFO:]\tregistered job to run hourly")
 	} else {
 		go repoDiscoveryService.StartJob(doneChannel, errorChannel)
 		select {
 		case status := <-doneChannel:
-			log.Println("[info: finished fetching repository meta data]", status)
+			log.Println("[INFO:]\tfinished fetching repository meta data", status)
 			go commitManager.StartJob()
 			break
 		case errr := <-errorChannel:
-			log.Println("[error in pulldata:  failed to fetch repository data: ", errr, " ]")
+			log.Println("[ERROR:] in pulldata:  failed to fetch repository data: ", errr)
 			break
 		}
 
