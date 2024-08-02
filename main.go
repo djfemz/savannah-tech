@@ -72,8 +72,8 @@ func configureAppComponents() {
 	commitService = services.NewCommitService(commitRepository)
 	githubAuxService := services.NewGithubRepoMetadataService(githubAuxRepo)
 	repoDiscoveryService = services.NewRepoDiscoveryService(githubAuxService)
-	commitManager = services.NewCommitManager(commitService)
-	commitMonitorService = services.NewCommitMonitorService(commitService)
+	commitManager = services.NewCommitManager(commitService, repoDiscoveryService)
+	commitMonitorService = services.NewCommitMonitorService(commitManager)
 	commitController = controllers.NewCommitController(commitService)
 }
 
@@ -82,24 +82,30 @@ func pullData() {
 	configureAppComponents()
 	doneChannel = make(chan bool)
 	errorChannel = make(chan any)
-	go repoDiscoveryService.StartJob(doneChannel, errorChannel)
-	select {
-	case status := <-doneChannel:
-		log.Println("[info: finished fetching repository meta data]", status)
-		go commitManager.StartJob()
-		break
-	case errr := <-errorChannel:
-		log.Println("[error in pulldata:  failed to fetch repository data: ", errr, " ]")
-		break
-	}
+	exists, _ := repoDiscoveryService.ExistsByName(os.Getenv("REPO_NAME"))
+	log.Println("exists: ", exists)
+	if exists {
+		log.Println("commit monitor to start pulling data in 1 hour")
+		id, err := job.AddFunc("@hourly", func() {
+			log.Println("about to start monitoring repo")
+			commitMonitorService.StartJob()
+		})
+		if err != nil {
+			log.Printf("[Error: starting task with id: %d. Failed with error: %v", id, err)
+		}
+		log.Println("registered job to run hourly")
+	} else {
+		go repoDiscoveryService.StartJob(doneChannel, errorChannel)
+		select {
+		case status := <-doneChannel:
+			log.Println("[info: finished fetching repository meta data]", status)
+			go commitManager.StartJob()
+			break
+		case errr := <-errorChannel:
+			log.Println("[error in pulldata:  failed to fetch repository data: ", errr, " ]")
+			break
+		}
 
-	id, err := job.AddFunc("@hourly", func() {
-		log.Println("about to start monitoring repo")
-		commitMonitorService.StartJob()
-	})
-	if err != nil {
-		log.Printf("[Error: starting task with id: %d. Failed with error: %v", id, err)
 	}
-	log.Println("registered job to run hourly")
 
 }

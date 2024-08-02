@@ -20,6 +20,12 @@ func LoadTestGithubRepositoryMetaData() *dtos.GithubRepositoryResponse {
 
 }
 
+func GetRepoMetaData() *models.GithubRepository {
+	return &models.GithubRepository{
+		Name: "test",
+	}
+}
+
 func LoadTestAuthorData() []*models.Author {
 	return []*models.Author{
 		{

@@ -14,6 +14,8 @@ type Commit struct {
 	CommitHash string `gorm:"unique"`
 	Message    string
 	Author     *Author
+	Repo       *GithubRepository
+	RepoID     uint
 	Date       time.Time
 	URL        string
 }
@@ -31,7 +33,7 @@ type Author struct {
 
 // TODO: create ERD for relationship between commits and repository
 type GithubRepository struct {
-	ID             uint
+	ID             uint `gorm:"primaryKey"`
 	Name           string
 	Description    string
 	RepoId         uint `gorm:"unique"`
@@ -45,13 +47,14 @@ type GithubRepository struct {
 	UpdatedDate    time.Time
 }
 
-func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse) *Commit {
+func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse, repository *GithubRepository) *Commit {
 	return &Commit{
 		RepoName:   os.Getenv("REPO_NAME"),
 		CommitHash: response.Sha,
 		Message:    response.RepoCommit.Message,
 		URL:        response.RepoCommit.URL,
 		Date:       response.RepoCommit.Committer.Date,
+		Repo:       repository,
 		Author: &Author{
 			Name:     response.RepoCommit.RepoAuthor.Name,
 			Email:    response.RepoCommit.RepoAuthor.Email,

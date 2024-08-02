@@ -5,10 +5,10 @@ import (
 	"github.com/djfemz/savannahTechTask/api/models"
 )
 
-func MapToCommits(commits *[]dtos.GitHubCommitResponse) []*models.Commit {
+func MapToCommits(commits *[]dtos.GitHubCommitResponse, repository *models.GithubRepository) []*models.Commit {
 	var usersCommits = make([]*models.Commit, 0)
 	for _, commit := range *commits {
-		userCommit := models.NewCommitFromGithubCommitResponse(&commit)
+		userCommit := models.NewCommitFromGithubCommitResponse(&commit, repository)
 		usersCommits = append(usersCommits, userCommit)
 	}
 	return usersCommits

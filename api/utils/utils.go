@@ -48,6 +48,9 @@ func GetCommitCount() string {
 	res, err := client.Do(req)
 	log.Println("response: ", res)
 	header := res.Header.Get("Link")
+	if header == EMPTY_STRING {
+		return "0"
+	}
 	parts := strings.Split(header, ",")
 	part := parts[1]
 	parts = strings.Split(part, "&")

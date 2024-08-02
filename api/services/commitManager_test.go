@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -19,11 +20,15 @@ var err error
 
 func TestFetchCommitDataByTime(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
-	var commitManager = NewCommitManager(NewCommitService(commitRepository))
+	repoMetaDataRepository := new(mocks.GithubAuxiliaryRepository)
+	var commitManager = NewCommitManager(NewCommitService(commitRepository),
+		NewRepoDiscoveryService(NewGithubRepoMetadataService(repoMetaDataRepository)))
 	var expected *[]dtos.GitHubCommitResponse
 	testTime, _ := utils.GetTimeFrom(os.Getenv("FETCH_DATE_SINCE"))
 	response := utils.GetByDate(*testTime)
+	log.Println("response: ", response)
 	commitRepository.On("SaveAll", mock.Anything).Return(nil)
+	repoMetaDataRepository.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 	httpmock.RegisterResponder(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), func(request *http.Request) (*http.Response, error) {
@@ -31,10 +36,11 @@ func TestFetchCommitDataByTime(t *testing.T) {
 		return res, err
 	})
 	since, _ := time.Parse(os.Getenv("ISO_TIME_FORMAT"), os.Getenv("FETCH_DATE_SINCE"))
-	data, _ := commitManager.FetchCommitDataFrom(since)
+	data, _ := commitManager.FetchCommitDataFrom(&since)
 	expectedJsonResponse, _ := json.Marshal(response)
 	err = json.Unmarshal(expectedJsonResponse, &expected)
 	assert.Nil(t, err)
+	log.Println("expected: ", expected, "\n actual: ", data)
 	assert.Equal(t, data, expected)
 }
 

@@ -15,9 +15,12 @@ import (
 
 func TestFetchCommitData(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
+	githubMetaDataRepo := new(mocks.GithubAuxiliaryRepository)
 	commitRepository.On("SaveAll", mock.Anything).Return(nil)
 	commitRepository.On("FindMostRecentCommit").Return(utils.LoadTestCommits()[0], nil)
-	commitMonitorService := NewCommitMonitorService(NewCommitService(commitRepository))
+	githubMetaDataRepo.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
+	commitMonitorService := NewCommitMonitorService(NewCommitManager(NewCommitService(commitRepository),
+		NewRepoDiscoveryService(NewGithubRepoMetadataService(githubMetaDataRepo))))
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
