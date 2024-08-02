@@ -44,7 +44,7 @@ func getData(url string, page int, start *time.Time) (resp *http.Response, err e
 	if err != nil {
 		return nil, err
 	}
-	addHeadersToRequest(req, page, start)
+	addHeadersToRequest(req, start)
 	log.Println("req: ", req)
 	resp, err = client.Do(req)
 	if err != nil {
@@ -77,10 +77,11 @@ func (commitMonitorService *CommitMonitorService) fetch() {
 	}
 }
 
-func addHeadersToRequest(req *http.Request, page int, start *time.Time) {
+func addHeadersToRequest(req *http.Request, start *time.Time) {
 	query := req.URL.Query()
 	if start != nil {
 		query.Add("since", start.String())
+		query.Add("until", time.Now().String())
 	}
 	query.Add("Accept", utils.ACCEPT_HEADER_VALUE)
 	query.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("AUTH_TOKEN")))

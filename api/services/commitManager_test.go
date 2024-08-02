@@ -8,7 +8,6 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -25,7 +24,6 @@ func TestFetchCommitDataByTime(t *testing.T) {
 	var expected *[]dtos.GitHubCommitResponse
 	testTime, _ := utils.GetTimeFrom(os.Getenv("FETCH_DATE_SINCE"))
 	response := utils.GetByDate(*testTime)
-	log.Println("response: ", response)
 	commitRepository.On("SaveAll", mock.Anything).Return(nil)
 	repoMetaDataRepository.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
 	httpmock.Activate()
