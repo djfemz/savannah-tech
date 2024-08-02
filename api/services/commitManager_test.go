@@ -6,7 +6,6 @@ import (
 	"github.com/djfemz/savannahTechTask/api/mocks"
 	"github.com/djfemz/savannahTechTask/api/utils"
 	"github.com/jarcoal/httpmock"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"log"
@@ -40,7 +39,6 @@ func TestFetchCommitDataByTime(t *testing.T) {
 	expectedJsonResponse, _ := json.Marshal(response)
 	err = json.Unmarshal(expectedJsonResponse, &expected)
 	assert.Nil(t, err)
-	log.Println("expected: ", expected, "\n actual: ", data)
 	assert.Equal(t, data, expected)
 }
 
@@ -49,9 +47,4 @@ func TestGetTimeFrom(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, testTime)
 
-}
-
-func TestGetCommitCount(t *testing.T) {
-	err = godotenv.Load()
-	utils.GetCommitCount()
 }

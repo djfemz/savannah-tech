@@ -45,10 +45,11 @@ func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dto
 	repository, _ := commitManager.FindByName(repoName)
 
 	totalCommitCount, _ = strconv.Atoi(utils.GetCommitCount())
+	url := os.Getenv("GITHUB_API_COMMIT_URL")
 	var responses = make([]dtos.GitHubCommitResponse, 0)
 	for {
 		log.Println("[INFO:]\tfetching records on page: ", counter)
-		resp, err := getData(os.Getenv("GITHUB_API_COMMIT_URL"), counter, since)
+		resp, err := getData(url, counter, since)
 		if err != nil {
 			log.Println("[ERROR:]\terror fetching commit data: ", err)
 		} else if resp.StatusCode == http.StatusForbidden {

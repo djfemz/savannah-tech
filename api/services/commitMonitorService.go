@@ -36,13 +36,15 @@ func (commitMonitorService *CommitMonitorService) FetchCommitData() (githubCommi
 
 func getData(url string, page int, start *time.Time) (resp *http.Response, err error) {
 	client := http.Client{}
-	url = url + "?page=" + strconv.Itoa(page) + "per_page=100"
+	if page > 0 {
+		url = fmt.Sprintf("%s%s%s%s%s", url, "?page=", strconv.Itoa(page),
+			"&per_page=", strconv.Itoa(MAX_RECORDS_PER_PAGE))
+	}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
-
-	//addHeadersToRequest(req, page, start)
+	addHeadersToRequest(req, page, start)
 	log.Println("req: ", req)
 	resp, err = client.Do(req)
 	if err != nil {
@@ -79,10 +81,6 @@ func addHeadersToRequest(req *http.Request, page int, start *time.Time) {
 	query := req.URL.Query()
 	if start != nil {
 		query.Add("since", start.String())
-	}
-	if page > 0 {
-		query.Add("page", strconv.Itoa(page))
-		query.Add("per_page", "100")
 	}
 	query.Add("Accept", utils.ACCEPT_HEADER_VALUE)
 	query.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("AUTH_TOKEN")))

@@ -18,13 +18,13 @@ func NewRepoDiscoveryService(service *GithubRepositoryService) *RepoDiscoverySer
 func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData(errorChannel chan<- any) (githubRepository *dtos.GithubRepositoryResponse, err error) {
 	resp, err := getData(os.Getenv("GITHUB_API_REPOSITORY_URL"), 0, nil)
 	if err != nil {
-		log.Println("Error fetching repository data: ", err)
+		log.Println("[Error:]\t", err)
 		errorChannel <- err
 		return nil, err
 	}
 	githubRepository, err = extractDataInto(resp, githubRepository)
 	if err != nil {
-		log.Println("Error extracting repository data from response: ", err)
+		log.Println("[Error:]\textracting repository data from response: ", err)
 		return nil, err
 	}
 	return githubRepository, err
@@ -32,14 +32,14 @@ func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData(errorChannel
 
 func (repoDiscoveryService *RepoDiscoveryService) StartJob(doneChannel chan<- bool, errorChannel chan<- any) {
 	go repoDiscoveryService.getRepoMetaData(doneChannel, errorChannel)
-	log.Println("Starting new task...")
+	log.Println("[INFO:]\tStarting new task...")
 }
 
 func (repoDiscoveryService *RepoDiscoveryService) getRepoMetaData(doneChannel chan<- bool, errorChannel chan<- any) {
 	githubRepository, err := repoDiscoveryService.FetchRepoMetaData(errorChannel)
 	if err != nil {
 		errorChannel <- err
-		log.Println("error fetching repo metadata: ", err)
+		log.Println("[ERROR:]\terror fetching repo metadata: ", err)
 		return
 	}
 	auxiliaryRepository := models.NewGithubRepository(githubRepository)
@@ -50,7 +50,7 @@ func (repoDiscoveryService *RepoDiscoveryService) getRepoMetaData(doneChannel ch
 	}
 	_, err = repoDiscoveryService.Save(auxiliaryRepository)
 	if err != nil {
-		log.Println("Error saving repository: ", err)
+		log.Println("[ERROR:]\tError saving repository: ", err)
 		errorChannel <- err
 		return
 	}
