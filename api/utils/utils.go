@@ -4,8 +4,10 @@ import (
 	"github.com/djfemz/savannahTechTask/api/appErrors"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -31,4 +33,27 @@ func GetTimeFrom(date string) (*time.Time, error) {
 		return nil, appErrors.NewTimeFormatError()
 	}
 	return &isoFormattedTime, nil
+}
+
+func GetCommitCount() string {
+	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), nil)
+	if err != nil {
+		log.Println("Error: ", err.Error())
+	}
+	query := req.URL.Query()
+	query.Add("page", "1")
+	query.Add("per_page", "1")
+	req.URL.RawQuery = query.Encode()
+	client := http.Client{}
+	res, err := client.Do(req)
+	log.Println("response: ", res)
+	header := res.Header.Get("Link")
+	parts := strings.Split(header, ",")
+	part := parts[1]
+	parts = strings.Split(part, "&")
+	part = parts[0]
+	parts = strings.Split(part, "=")
+	part = parts[1]
+	log.Println("part: ", part)
+	return part
 }

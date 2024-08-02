@@ -6,6 +6,7 @@ import (
 	"github.com/djfemz/savannahTechTask/api/mocks"
 	"github.com/djfemz/savannahTechTask/api/utils"
 	"github.com/jarcoal/httpmock"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"net/http"
@@ -42,4 +43,9 @@ func TestGetTimeFrom(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, testTime)
 
+}
+
+func TestGetCommitCount(t *testing.T) {
+	err = godotenv.Load()
+	utils.GetCommitCount()
 }
