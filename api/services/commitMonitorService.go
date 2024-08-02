@@ -53,7 +53,7 @@ func getData(url string, page int, start *time.Time) (resp *http.Response, err e
 }
 
 func (commitMonitorService *CommitMonitorService) StartJob() {
-	log.Println("Repo monitoring started...")
+	log.Println("[INFO:]\tRepo monitoring started...")
 	commitMonitorService.fetch()
 }
 
