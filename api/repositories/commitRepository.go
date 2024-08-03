@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"log"
 	"strconv"
 	"time"
 
@@ -29,6 +30,7 @@ func NewCommitRepository(db *gorm.DB) CommitRepository {
 }
 
 func (appCommitRepository *AppCommitRepository) Save(commit *models.Commit) (*models.Commit, error) {
+
 	if err := appCommitRepository.Create(commit).Error; err != nil {
 		return nil, err
 	}
@@ -54,7 +56,7 @@ func (appCommitRepository *AppCommitRepository) FindAllByDateSince(since *time.T
 }
 
 func (appCommitRepository *AppCommitRepository) FindMostRecentCommit() (commit *models.Commit, err error) {
-	if err = appCommitRepository.Preload(clause.Associations).Order("date desc").First(commit).Error; err != nil {
+	if err = appCommitRepository.Preload(clause.Associations).Order("committed_at desc").First(commit).Error; err != nil {
 		return nil, err
 	}
 	return
@@ -68,6 +70,7 @@ func (appCommitRepository *AppCommitRepository) FindAll() (commits []*models.Com
 }
 
 func (appCommitRepository *AppCommitRepository) SaveAll(commits []*models.Commit) error {
+	log.Println("commit date: ", commits[0].CommittedAt)
 	if err := appCommitRepository.DB.Save(commits).Error; err != nil {
 		return err
 	}

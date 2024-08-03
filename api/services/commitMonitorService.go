@@ -30,7 +30,7 @@ func (commitMonitorService *CommitMonitorService) FetchCommitData() (githubCommi
 	if err != nil {
 		log.Printf("[Error: %v]", err)
 	}
-	githubCommitResponses, err = commitMonitorService.fetchAllCommits(githubCommitResponses, &commit.Date)
+	githubCommitResponses, err = commitMonitorService.fetchAllCommits(githubCommitResponses, &commit.CreatedAt)
 	return githubCommitResponses, err
 }
 

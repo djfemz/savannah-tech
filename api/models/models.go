@@ -10,19 +10,19 @@ import (
 type Commit struct {
 	ID uint `gorm:"primaryKey"`
 	*gorm.Model
-	RepoName   string
-	CommitHash string `gorm:"unique"`
-	Message    string
-	Author     *Author
-	Repo       *GithubRepository
-	RepoID     uint
-	Date       time.Time
-	URL        string
+	RepoName    string
+	CommitHash  string `gorm:"unique"`
+	Message     string
+	Author      *Author
+	Repo        *GithubRepository
+	RepoID      uint
+	CommittedAt time.Time
+
+	URL string
 }
 
 type Author struct {
-	ID uint
-	*gorm.Model
+	ID       uint `gorm:"primaryKey"`
 	Username string
 	Name     string
 	Email    string
@@ -48,12 +48,12 @@ type GithubRepository struct {
 
 func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse, repository *GithubRepository) *Commit {
 	return &Commit{
-		RepoName:   os.Getenv("REPO_NAME"),
-		CommitHash: response.Sha,
-		Message:    response.RepoCommit.Message,
-		URL:        response.RepoCommit.URL,
-		Date:       response.RepoCommit.Committer.Date,
-		Repo:       repository,
+		RepoName:    os.Getenv("REPO_NAME"),
+		CommitHash:  response.Sha,
+		Message:     response.RepoCommit.Message,
+		URL:         response.RepoCommit.URL,
+		CommittedAt: response.RepoCommit.Committer.Date,
+		Repo:        repository,
 		Author: &Author{
 			Name:     response.RepoCommit.RepoAuthor.Name,
 			Email:    response.RepoCommit.RepoAuthor.Email,
@@ -65,7 +65,7 @@ func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse, repo
 func NewCommitResponse(commit *Commit) (commitResponse *dtos.CommitResponse) {
 	commitResponse = &dtos.CommitResponse{
 		ID:      commit.ID,
-		Date:    commit.Date,
+		Date:    commit.CreatedAt.String(),
 		Message: commit.Message,
 		URL:     commit.URL,
 	}

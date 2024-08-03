@@ -18,6 +18,7 @@ type CommitManager struct {
 }
 
 var totalCommitCount int
+var doneChannel *chan bool
 
 const (
 	MAX_RECORDS_PER_PAGE        = 100
@@ -34,7 +35,8 @@ func (commitManager *CommitManager) FetchCommitDataFrom(since *time.Time) (githu
 	return githubCommitResponses, err
 }
 
-func (commitManager *CommitManager) StartJob() {
+func (commitManager *CommitManager) StartJob(ch *chan bool) {
+	doneChannel = ch
 	go commitManager.FetchCommitDataFrom(nil)
 }
 
@@ -52,7 +54,7 @@ func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dto
 		if err != nil {
 			log.Println("[ERROR:]\terror fetching commit data: ", err)
 		} else if resp.StatusCode == http.StatusForbidden {
-			log.Printf("[info]:\tGitHub responded with a status code: %d, server sleeping off for 1 hour...", resp.StatusCode)
+			log.Printf("[INFO]:\tGitHub responded with a status code: %d, server sleeping off for 1 hour...", resp.StatusCode)
 			time.Sleep(70 * time.Minute)
 		} else if resp.StatusCode == http.StatusOK {
 			log.Println("[INFO:]\tsuccess fetching...")
@@ -66,11 +68,13 @@ func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dto
 				}
 			}
 			log.Println("max records: ", MAX_RECORDS_PER_PAGE, "\ntotalCommitCount: ", totalCommitCount)
-			if counter*MAX_RECORDS_PER_PAGE >= totalCommitCount {
+			isDoneFetchingCommitData := (counter * MAX_RECORDS_PER_PAGE) >= totalCommitCount
+			if isDoneFetchingCommitData {
 				break
 			}
 			counter++
 		}
 	}
+	*doneChannel <- true
 	return &responses, nil
 }

@@ -5,12 +5,12 @@ import (
 )
 
 type CommitResponse struct {
-	ID          uint      `json:"id"`
-	Message     string    `json:"message,omitempty,-"`
-	Author      string    `json:"author,omitempty,-"`
-	AuthorEmail string    `json:"author_email,omitempty,-"`
-	Date        time.Time `json:"date,omitempty,-"`
-	URL         string    `json:"url,omitempty,-"`
+	ID          uint   `json:"id"`
+	Message     string `json:"message,omitempty,-"`
+	Author      string `json:"author,omitempty,-"`
+	AuthorEmail string `json:"author_email,omitempty,-"`
+	Date        string `json:"date,omitempty,-"`
+	URL         string `json:"url,omitempty,-"`
 }
 
 type RepositoryResponse struct {

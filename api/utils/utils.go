@@ -29,7 +29,7 @@ func GetTimeFrom(date string) (*time.Time, error) {
 	log.Println(date)
 	isoFormattedTime, err := time.Parse(os.Getenv("ISO_TIME_FORMAT"), date)
 	if err != nil {
-		log.Println("Date in wrong format: ", date)
+		log.Println("CreatedAt in wrong format: ", date)
 		return nil, appErrors.NewTimeFormatError()
 	}
 	return &isoFormattedTime, nil
