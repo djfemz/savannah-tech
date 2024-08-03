@@ -57,18 +57,15 @@ func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dto
 			log.Printf("[INFO]:\tGitHub responded with a status code: %d, server sleeping off for 1 hour...", resp.StatusCode)
 			time.Sleep(70 * time.Minute)
 		} else if resp.StatusCode == http.StatusOK {
-			log.Println("[INFO:]\tsuccess fetching...", resp)
+			log.Println("[INFO:]\tsuccess fetching page: ", counter)
 			githubCommitResponses, _ = extractDataInto(resp, githubCommitResponses)
-			log.Println("res: ", len(*githubCommitResponses))
 			if githubCommitResponses != nil && len(*githubCommitResponses) > 0 {
 
 				commits := mappers.MapToCommits(githubCommitResponses, repository)
-				log.Println("Data: ", commits)
 				if err = commitManager.repository.SaveAll(commits); err != nil {
 					log.Println("[ERROR:]\terror saving data: ", err)
 				}
 			}
-			log.Println("max records: ", MAX_RECORDS_PER_PAGE, "\ntotalCommitCount: ", totalCommitCount)
 			isDoneFetchingCommitData := (counter * int64(MAX_RECORDS_PER_PAGE)) >= int64(totalCommitCount)
 			if isDoneFetchingCommitData {
 				break

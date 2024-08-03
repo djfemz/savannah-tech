@@ -26,11 +26,6 @@ func NewCommitMonitorService(commitManager *CommitManager) *CommitMonitorService
 }
 
 func (commitMonitorService *CommitMonitorService) FetchCommitData() (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
-	commit, err := commitMonitorService.GetMostRecentCommit()
-	if err != nil {
-		log.Printf("[Error: %v]", err)
-	}
-	log.Println("commit: ", commit.CommittedAt)
 	githubCommitResponses, err = commitMonitorService.fetchAllCommits(githubCommitResponses, nil)
 	return githubCommitResponses, err
 }
@@ -41,7 +36,6 @@ func getData(url string, page int64, start *time.Time) (resp *http.Response, err
 	if err != nil {
 		return nil, err
 	}
-	log.Println("req: ", req)
 	addHeadersTo(req)
 	addParamsTo(req, int(page), start)
 	resp, err = client.Do(req)
@@ -99,7 +93,6 @@ func extractDataInto[t any](resp *http.Response, into *t) (*t, error) {
 	}
 
 	err := json.NewDecoder(resp.Body).Decode(&into)
-	log.Println("into: ", into)
 	if err != nil {
 		log.Println("[ERROR:]\tError reading response: ", err)
 		return nil, err
