@@ -62,7 +62,7 @@ func (repoController *RepoController) PullData() {
 	commitManagerDoneChannel = make(chan bool)
 	isExistingRepository, err := repoController.ExistsByName(os.Getenv("REPO_NAME"))
 	if err != nil {
-		log.Fatal("Failed to determine repo existence", err)
+		log.Println("[ERROR: ]\tFailed to determine repo existence", err)
 	}
 	log.Println("In repo cont isExistingRepo-> ", isExistingRepository)
 	if !isExistingRepository {
