@@ -108,16 +108,18 @@ func LoadTestGithubCommitData() []*dtos.GitHubCommitResponse {
 func LoadTestCommits() []*models.Commit {
 	return []*models.Commit{
 		{
-			ID:      33,
-			Message: "initial commit",
+			ID:          33,
+			Message:     "initial commit",
+			CommittedAt: time.Now(),
 			Author: &models.Author{
 				ID:    44,
 				Email: "author@email.com",
 			},
 		},
 		{
-			ID:      35,
-			Message: "refactored repo",
+			ID:          35,
+			Message:     "refactored repo",
+			CommittedAt: time.Now(),
 			Author: &models.Author{
 				ID:    44,
 				Email: "author1@email.com",

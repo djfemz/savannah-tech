@@ -30,12 +30,12 @@ func (commitMonitorService *CommitMonitorService) FetchCommitData() (githubCommi
 	if err != nil {
 		log.Printf("[Error: %v]", err)
 	}
-	githubCommitResponses, err = commitMonitorService.fetchAllCommits(githubCommitResponses, &commit.CreatedAt)
+	log.Println("commit: ", commit.CommittedAt)
+	githubCommitResponses, err = commitMonitorService.fetchAllCommits(githubCommitResponses, nil)
 	return githubCommitResponses, err
 }
 
-// TODO: work on calling fetch operation in endpoint that adds repoName
-func getData(url string, page int, start *time.Time) (resp *http.Response, err error) {
+func getData(url string, page int64, start *time.Time) (resp *http.Response, err error) {
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -43,7 +43,7 @@ func getData(url string, page int, start *time.Time) (resp *http.Response, err e
 	}
 	log.Println("req: ", req)
 	addHeadersTo(req)
-	addParamsTo(req, page, start)
+	addParamsTo(req, int(page), start)
 	resp, err = client.Do(req)
 	if err != nil {
 		return nil, err
@@ -97,7 +97,9 @@ func extractDataInto[t any](resp *http.Response, into *t) (*t, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New(fmt.Sprintf("request responded to with status: %d", resp.StatusCode))
 	}
+
 	err := json.NewDecoder(resp.Body).Decode(&into)
+	log.Println("into: ", into)
 	if err != nil {
 		log.Println("[ERROR:]\tError reading response: ", err)
 		return nil, err

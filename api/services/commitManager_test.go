@@ -25,6 +25,7 @@ func TestFetchCommitDataByTime(t *testing.T) {
 	testTime, _ := utils.GetTimeFrom(os.Getenv("FETCH_DATE_SINCE"))
 	response := utils.GetByDate(*testTime)
 	commitRepository.On("SaveAll", mock.Anything).Return(nil)
+	commitRepository.On("CountCommits").Return(int64(3), nil)
 	repoMetaDataRepository.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()

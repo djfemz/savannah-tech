@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/djfemz/savannahTechTask/api/mocks"
 	"github.com/djfemz/savannahTechTask/api/models"
+	"time"
 
 	"testing"
 
@@ -10,8 +11,8 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var testCommits = []*models.Commit{{ID: 1, RepoName: "test repo", CommitHash: "abc123"},
-	{ID: 2, RepoName: "test repo 1", CommitHash: "abc1234"}}
+var testCommits = []*models.Commit{{ID: 1, RepoName: "test repo", CommitHash: "abc123", CommittedAt: time.Now()},
+	{ID: 2, RepoName: "test repo 1", CommitHash: "abc1234", CommittedAt: time.Now()}}
 
 var testAuthors = []*models.Author{{ID: 1, Name: "author 1", Email: "john@email.com"}, {ID: 1, Name: "author 1", Email: "john@email.com"}, {ID: 1, Name: "author 1", Email: "john@email.com"}}
 

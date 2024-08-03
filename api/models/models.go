@@ -63,11 +63,16 @@ func NewCommitFromGithubCommitResponse(response *dtos.GitHubCommitResponse, repo
 }
 
 func NewCommitResponse(commit *Commit) (commitResponse *dtos.CommitResponse) {
+	if commit == nil {
+		return nil
+	}
 	commitResponse = &dtos.CommitResponse{
 		ID:      commit.ID,
-		Date:    commit.CreatedAt.String(),
 		Message: commit.Message,
 		URL:     commit.URL,
+	}
+	if &commit.CommittedAt != nil {
+		commitResponse.Date = commit.CommittedAt
 	}
 	if commit.Author != nil {
 		commitResponse.AuthorEmail = commit.Author.Email

@@ -3,6 +3,7 @@ package repositories
 import (
 	"github.com/djfemz/savannahTechTask/api/models"
 	"gorm.io/gorm"
+	"log"
 )
 
 type GithubAuxiliaryRepository interface {
@@ -49,7 +50,9 @@ func (githubAuxRepo *GithubMetaDataRepository) FindByName(name string) (*models.
 
 func (githubAuxRepo *GithubMetaDataRepository) ExistsByName(name string) (bool, error) {
 	var repository *models.GithubRepository
-	if err := githubAuxRepo.Where(&models.GithubRepository{Name: name}).First(repository).Error; err != nil {
+	if err := githubAuxRepo.Where(&models.GithubRepository{Name: name}).First(&repository).Error; err != nil {
+
+		log.Println("[ERROR:]\t ", err)
 		return false, err
 	} else if repository != nil && repository.Name == name {
 		return true, nil

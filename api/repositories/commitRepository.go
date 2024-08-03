@@ -19,6 +19,7 @@ type CommitRepository interface {
 	FindMostRecentCommit() (*models.Commit, error)
 	FindTopCommitAuthors(size int) ([]*models.Author, error)
 	FindCommitsForRepoByName(name string) ([]*models.Commit, error)
+	CountCommits() (int64, error)
 }
 
 type AppCommitRepository struct {
@@ -55,11 +56,13 @@ func (appCommitRepository *AppCommitRepository) FindAllByDateSince(since *time.T
 	return
 }
 
-func (appCommitRepository *AppCommitRepository) FindMostRecentCommit() (commit *models.Commit, err error) {
-	if err = appCommitRepository.Preload(clause.Associations).Order("committed_at desc").First(commit).Error; err != nil {
+func (appCommitRepository *AppCommitRepository) FindMostRecentCommit() (*models.Commit, error) {
+	commit := models.Commit{}
+	if err := appCommitRepository.Preload(clause.Associations).Order("committed_at desc").First(&commit).Error; err != nil {
+		log.Println("[ERROR:]\t error finding most recent commit ", err)
 		return nil, err
 	}
-	return
+	return &commit, nil
 }
 
 func (appCommitRepository *AppCommitRepository) FindAll() (commits []*models.Commit, err error) {
@@ -70,8 +73,9 @@ func (appCommitRepository *AppCommitRepository) FindAll() (commits []*models.Com
 }
 
 func (appCommitRepository *AppCommitRepository) SaveAll(commits []*models.Commit) error {
-	log.Println("commit date: ", commits[0].CommittedAt)
+	log.Println("[INFO:]\t saving data")
 	if err := appCommitRepository.DB.Save(commits).Error; err != nil {
+		log.Println("[ERROR:]\t error saving commits", err)
 		return err
 	}
 	return nil
@@ -93,4 +97,14 @@ func (appCommitRepository *AppCommitRepository) FindCommitsForRepoByName(name st
 		return nil, err
 	}
 	return commits, nil
+}
+
+func (appCommitRepository *AppCommitRepository) CountCommits() (int64, error) {
+	var commits []models.Commit
+	var count int64
+	err := appCommitRepository.Model(&commits).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }

@@ -37,17 +37,17 @@ func (commitManager *CommitManager) FetchCommitDataFrom(since *time.Time) (githu
 
 func (commitManager *CommitManager) StartJob(ch *chan bool) {
 	doneChannel = ch
-	go commitManager.FetchCommitDataFrom(nil)
+	commitManager.FetchCommitDataFrom(nil)
 }
 
 func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dtos.GitHubCommitResponse, since *time.Time) (*[]dtos.GitHubCommitResponse, error) {
-	counter := 1
+	counter, _ := commitManager.CommitService.repository.CountCommits()
+	counter = counter / int64(MAX_RECORDS_PER_PAGE)
 	repoName := os.Getenv("REPO_NAME")
 	repository, _ := commitManager.FindByName(repoName)
 
 	totalCommitCount, _ = strconv.Atoi(utils.GetCommitCount())
 	url := os.Getenv("GITHUB_API_COMMIT_URL")
-	var responses = make([]dtos.GitHubCommitResponse, 0)
 	for {
 		log.Println("[INFO:]\tfetching records on page: ", counter)
 		resp, err := getData(url, counter, since)
@@ -57,24 +57,32 @@ func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dto
 			log.Printf("[INFO]:\tGitHub responded with a status code: %d, server sleeping off for 1 hour...", resp.StatusCode)
 			time.Sleep(70 * time.Minute)
 		} else if resp.StatusCode == http.StatusOK {
-			log.Println("[INFO:]\tsuccess fetching...")
+			log.Println("[INFO:]\tsuccess fetching...", resp)
 			githubCommitResponses, _ = extractDataInto(resp, githubCommitResponses)
-			responses = append(responses, *githubCommitResponses...)
-			if responses != nil && len(responses) > 0 {
+			log.Println("res: ", len(*githubCommitResponses))
+			if githubCommitResponses != nil && len(*githubCommitResponses) > 0 {
 
 				commits := mappers.MapToCommits(githubCommitResponses, repository)
+				log.Println("Data: ", commits)
 				if err = commitManager.repository.SaveAll(commits); err != nil {
 					log.Println("[ERROR:]\terror saving data: ", err)
 				}
 			}
 			log.Println("max records: ", MAX_RECORDS_PER_PAGE, "\ntotalCommitCount: ", totalCommitCount)
-			isDoneFetchingCommitData := (counter * MAX_RECORDS_PER_PAGE) >= totalCommitCount
+			isDoneFetchingCommitData := (counter * int64(MAX_RECORDS_PER_PAGE)) >= int64(totalCommitCount)
 			if isDoneFetchingCommitData {
 				break
 			}
 			counter++
 		}
 	}
-	*doneChannel <- true
-	return &responses, nil
+	if doneChannel == nil {
+		return githubCommitResponses, nil
+	} else {
+		ch := make(chan bool)
+		doneChannel = &ch
+		*doneChannel <- true
+		close(*doneChannel)
+	}
+	return githubCommitResponses, nil
 }

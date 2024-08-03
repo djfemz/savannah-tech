@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"github.com/djfemz/savannahTechTask/api/services"
 	"github.com/gin-gonic/gin"
@@ -49,7 +50,7 @@ func (repoController *RepoController) AddRepoName(ctx *gin.Context) {
 			return
 		} else {
 			ctx.JSON(http.StatusOK, dtos.NewBaseResponse("repo sent successfully"))
-
+			repoController.PullData()
 		}
 	}
 }
@@ -59,20 +60,29 @@ func (repoController *RepoController) PullData() {
 	doneChannel = make(chan bool)
 	errorChannel = make(chan any)
 	commitManagerDoneChannel = make(chan bool)
-	isExistingRepository, _ := repoController.ExistsByName(os.Getenv("REPO_NAME"))
+	isExistingRepository, err := repoController.ExistsByName(os.Getenv("REPO_NAME"))
+	if err != nil {
+		log.Fatal("Failed to determine repo existence", err)
+	}
+	log.Println("In repo cont isExistingRepo-> ", isExistingRepository)
 	if !isExistingRepository {
 		fetchFromRepo(repoController)
-	}
-	select {
-	case <-doneChannel:
+		select {
+		case <-commitManagerDoneChannel:
+			monitorRepoForChanges(job, repoController)
+			job.Start()
+		}
+	} else {
+		fmt.Println("commit monitor task ")
 		monitorRepoForChanges(job, repoController)
 		job.Start()
 	}
+
 }
 
 func monitorRepoForChanges(job *cron.Cron, controller *RepoController) {
 	log.Println("[INFO:]\tcommit monitor to start pulling data in 1 hour")
-	id, err := job.AddFunc("*/2 * * * *", func() {
+	id, err := job.AddFunc("*/1 * * * *", func() {
 		log.Println("[INFO:]\tabout to start monitoring repo")
 		go controller.CommitMonitorService.StartJob()
 	})
