@@ -4,13 +4,13 @@
 
 
 ## Description
-This is a project that retrieves commit data about a specified github repository, the application provides three main features for retrieving repository information.
+This is a project that retrieves commit data about a specified GitHub repository, the application provides three main features for retrieving repository information.
 ## Key Features
 
 &nbsp;
-__Get Top N Commit Authors__: This feature returns the top N Committers for the given Github Repository.\
+__Get Top N Commit Authors__: This feature returns the top N Committers for the given GitHub Repository.\
 &nbsp;
-__Get All Commits for Repository__: This feature retrieves all commits for the given Github Repository. \
+__Get All Commits for Repository__: This feature retrieves all commits for the given GitHub Repository. \
 &nbsp;
 __Get Commits From a given Date__: This feature retrieves commits from the given date to the current time.
 
@@ -35,7 +35,7 @@ To run this project, you will need to add the following environment variables to
 To Run the project, navigate to the projects root directory and do the following:
 1. Clone the project from the repository [here](https://github.com/djfemz/savannah_Tech)
 
-2. Before running any commands to build/run the application, make sure that all environment variables in the Environment Variables section [here](#environment-variables) are filled in.
+2. Before running any commands to build/run the application, make sure that all environment variables in the Environment Variables section [here](#environment-variables) are filled in, especially the `AUTH_TOKEN` (gitHub access token), variable.
 
 3. Ensure that docker is up and running on your computer.
 4. If building or running the application the first time, execute the following command:
@@ -54,7 +54,9 @@ docker-compose run api
 
 ## Testing
 - The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. The tests are executed as a part of the build process, so running the command below, will execute the tests and the build will fail if any test fails:
-- ### _docker-compose up --build_
+```shell
+docker-compose up --build
+``` 
 ## Technologies Used
 Golang
 ## API Documentation
