@@ -20,7 +20,8 @@ type CommitManager struct {
 var totalCommitCount int
 
 const (
-	MAX_RECORDS_PER_PAGE = 100
+	MAX_RECORDS_PER_PAGE        = 100
+	MINIMUM_ALLOWED_PAGE_NUMBER = 1
 )
 
 func NewCommitManager(commitService *CommitService, repoDiscovery *RepoDiscoveryService) *CommitManager {
