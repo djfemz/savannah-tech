@@ -42,14 +42,9 @@ To Run the project, navigate to the projects root directory and do the following
 ```shell
 docker network create fullstack
 ```
-5. execute the following command to build the application and execute the tests:
+5. execute the following command to build, test and start the application:
 ```shell
 docker-compose up --build
-``` 
-
-6. execute the following command to start the application:
-```shell
-docker-compose run api
 ```
 
 ## Testing
