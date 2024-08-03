@@ -1,19 +1,22 @@
+
 # SavannahTech
 
+
+
 ## Description
-This is a project that retrieves commit data from a specified GitHub repository, the application provides three main features for retrieving repository information. 
+This is a project that retrieves commit data about a specified github repository, the application provides three main features for retrieving repository information.
 ## Key Features
 
 &nbsp;
-__Get Top N Commit Authors__: This feature returns the top N Committers for the given GitHub Repository.\
+__Get Top N Commit Authors__: This feature returns the top N Committers for the given Github Repository.\
 &nbsp;
-__Get All Commits for Repository__: This feature retrieves all commits for the given GitHub Repository. \
+__Get All Commits for Repository__: This feature retrieves all commits for the given Github Repository. \
 &nbsp;
-__Get Commits From a given Date__: This feature retrieves commits from the given date to the current time. 
+__Get Commits From a given Date__: This feature retrieves commits from the given date to the current time.
 
 ## Environment Variables
 
-To run this project, you will need to provide values for the following environment variables in the .env.example file
+To run this project, you will need to add the following environment variables to your example.env file
 
 `DATABASE_HOST`
 `DATABASE_USERNAME`
@@ -22,29 +25,31 @@ To run this project, you will need to provide values for the following environme
 `DATABASE_PORT`
 `REPO_OWNER`
 `REPO_NAME`
-`AUTH_TOKEN` (GitHub access token)
+`AUTH_TOKEN` (gitHub access token)
 `FETCH_DATE_SINCE`(Format: MM-DD-YYYY)
 
 
 
 ## Getting Started
-1. To Run the project, navigate to the projects root directory and execute the 'go run main.go' command in the projects root directory
 ## Usage
 To Run the project, navigate to the projects root directory and do the following:
-1. Run 'docker network create fullstack' before executing the application the first time.
-2. Run 'docker-compose up --build' to build the application and execute the tests.
-3. Run 'docker-compose run api' to start the application.
+1. Clone the project from the repository [here](https://github.com/djfemz/savannah_Tech)
+
+2. Before running any commands to build/run the application, make sure that all environment variables in the Environment Variables section [here](#environment-variables) are filled in.
+
+3. Ensure that docker is up and running on your computer.
+4. execute the following command:
+- _docker network create fullstack_.
+
+5. execute the following command to build the application and execute the tests:
+- _docker-compose up --build_.
+
+6. execute the following command to start the application:
+- _docker-compose run api_.
 
 ## Testing
-- The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. To run the tests, navigate to the projects root directory and execute one of the following commands:\
-&nbsp;
-__Go:__ 
-- go test .\services .\repositories .\controllers\
-&nbsp;
-__Docker:__ 
-- Running 'docker-compose up --build' command to build the project with docker will execute all unit and 
-integration tests in the project.
-
+- The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. The tests are executed as a part of the build process, so running the command below, will execute the tests and the build will fail if any test fails:
+- _docker-compose up --build_
 ## Technologies Used
 Golang
 ## API Documentation
@@ -54,7 +59,7 @@ Golang
 #### GET http://localhost:8082/commits?size=3
 
 - Get Top N commits
-**Request Sample**
+  **Request Sample**
 ```shell
 curl --location 'localhost:8082/commits/authors/top?size=3' \
 --header 'Content-Type: application/json' \'
@@ -170,9 +175,9 @@ curl -X 'GET' \
 ]
 ```
 # Swagger Documentation
-The swagger documentation can be found here after running the application: 
+The swagger documentation can be found here:
 http://localhost:8082/swagger-ui/index.html
 
 ## Acknowledgements
- - Github: https://github.com
+- Github: https://github.com
 
