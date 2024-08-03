@@ -38,18 +38,23 @@ To Run the project, navigate to the projects root directory and do the following
 2. Before running any commands to build/run the application, make sure that all environment variables in the Environment Variables section [here](#environment-variables) are filled in.
 
 3. Ensure that docker is up and running on your computer.
-4. execute the following command:
-- _docker network create fullstack_.
-
+4. If building or running the application the first time, execute the following command:
+```shell
+docker network create fullstack
+```
 5. execute the following command to build the application and execute the tests:
-- _docker-compose up --build_.
+```shell
+docker-compose up --build
+``` 
 
 6. execute the following command to start the application:
-- _docker-compose run api_.
+```shell
+docker-compose run api
+```
 
 ## Testing
 - The test suites for all the components of the application are located in the controllers, repositories and services directories in the api directory. The tests are executed as a part of the build process, so running the command below, will execute the tests and the build will fail if any test fails:
-- _docker-compose up --build_
+- ### _docker-compose up --build_
 ## Technologies Used
 Golang
 ## API Documentation
