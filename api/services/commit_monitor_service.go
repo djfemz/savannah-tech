@@ -75,7 +75,7 @@ func addHeadersTo(req *http.Request) {
 }
 
 func (commitMonitorService *CommitMonitorService) StartJob() {
-	log.Println("[INFO:]\tRepo monitoring started...")
+	commitMonitorService.Println("\tRepo monitoring started...")
 	commitMonitorService.pullCommitDataFromGithub()
 }
 
