@@ -19,7 +19,7 @@ import (
 var err error
 
 func init() {
-	err = godotenv.Load()
+	err = godotenv.Load(".env.example")
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}
@@ -47,9 +47,9 @@ func main() {
 	isGithubCredentialValid := strings.TrimSpace(os.Getenv("REPO_NAME")) != utils.EMPTY_STRING &&
 		strings.TrimSpace(os.Getenv("REPO_OWNER")) != utils.EMPTY_STRING
 	if isGithubCredentialValid {
-		log.Println("[WARN:]\t Repo name is empty, provide repository name to start pulling data")
-	} else {
 		repoController.PullData()
+	} else {
+		log.Println("[WARN:]\t Repo name is empty, provide repository name to start pulling data")
 	}
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
