@@ -78,12 +78,14 @@ func (repoController *RepoController) PullData() {
 			monitorRepoForChanges(job, repoController)
 			job.Start()
 		}
+	} else {
+		repoController.CommitManager.StartJob(nil)
 	}
 }
 
 func monitorRepoForChanges(job *cron.Cron, controller *RepoController) {
 	log.Println("[INFO:]\tcommit monitor to start pulling data in 1 hour")
-	id, err := job.AddFunc("@hourly", func() {
+	id, err := job.AddFunc("*/1 * * * *", func() {
 		log.Println("[INFO:]\tabout to start monitoring repo")
 		go controller.CommitMonitorService.StartJob()
 	})

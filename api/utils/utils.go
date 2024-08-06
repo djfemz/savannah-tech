@@ -23,7 +23,7 @@ var (
 )
 
 func init() {
-	BASE_URL = os.Getenv("GITHUB_API_BASE_URL")
+
 }
 
 func ExtractParamFromRequest(paramName string, ctx *gin.Context) (uint64, error) {
@@ -41,6 +41,7 @@ func GetTimeFrom(date string) (*time.Time, error) {
 }
 
 func GetCommitCount() string {
+	BASE_URL = os.Getenv("GITHUB_API_BASE_URL")
 	req, err := http.NewRequest(http.MethodGet, BASE_URL+"/commits", nil)
 	if err != nil {
 		log.Println("Error: ", err.Error())
@@ -50,6 +51,7 @@ func GetCommitCount() string {
 	query.Add("page", "1")
 	query.Add("per_page", "1")
 	req.URL.RawQuery = query.Encode()
+	log.Println("req: ", req)
 	client := http.Client{}
 	res, err := client.Do(req)
 	log.Println("response: ", res)
