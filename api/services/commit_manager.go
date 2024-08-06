@@ -38,7 +38,7 @@ func NewCommitManager(commitService *CommitService, repoDiscovery *RepoDiscovery
 }
 
 func (commitManager *CommitManager) FetchCommitDataFrom(since *time.Time) (githubCommitResponses *[]dtos.GitHubCommitResponse, err error) {
-	log.Printf("[info: start fetch commit data in %s ]", "commit manager")
+	log.Printf("[info: start pullCommitDataFromGithub commit data in %s ]", "commit manager")
 	githubCommitResponses, err = commitManager.fetchAllCommits(githubCommitResponses, since)
 	return githubCommitResponses, err
 }

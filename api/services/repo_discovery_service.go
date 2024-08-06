@@ -34,7 +34,7 @@ func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData(errorChannel
 }
 
 func (repoDiscoveryService *RepoDiscoveryService) StartJob(doneChannel chan<- bool, errorChannel chan<- any) {
-	log.Println("[INFO:]\t Starting task to fetch Repository Metadata..")
+	log.Println("[INFO:]\t Starting task to pullCommitDataFromGithub Repository Metadata..")
 	go repoDiscoveryService.getRepoMetaData(doneChannel, errorChannel)
 }
 
