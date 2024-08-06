@@ -22,7 +22,7 @@ func TestFetchCommitData(t *testing.T) {
 	commitRepository.On("CountCommits").Return(int64(3), nil)
 	githubMetaDataRepo.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
 	commitMonitorService := NewCommitMonitorService(NewCommitManager(NewCommitService(commitRepository),
-		NewRepoDiscoveryService(NewGithubRepoMetadataService(githubMetaDataRepo))))
+		NewRepoDiscoveryService(NewGithubRepoMetadataService(githubMetaDataRepository), logger), logger), logger)
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
