@@ -3,13 +3,12 @@ package main
 import (
 	"github.com/djfemz/savannahTechTask/api/controllers"
 	"github.com/djfemz/savannahTechTask/api/repositories"
+	routes "github.com/djfemz/savannahTechTask/api/router"
 	"github.com/djfemz/savannahTechTask/api/services"
 	"github.com/djfemz/savannahTechTask/api/utils"
 	_ "github.com/djfemz/savannahTechTask/docs"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 	"log"
 	"os"
@@ -52,21 +51,13 @@ func main() {
 		log.Println("[WARN:]\t Repo name is empty, provide repository name to start pulling data")
 	}
 	router := gin.Default()
-	registerRoutes(router)
+	routes.SetupRoutes(router, commitController, repoController)
 	port := os.Getenv("SERVER_PORT")
 	log.Println("port: ", port)
 	err = router.Run(":" + port)
 	if err != nil {
 		log.Fatal("Failed to start server on port: ", port)
 	}
-}
-
-func registerRoutes(router *gin.Engine) {
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.GET("/api/v1/commits/authors/top", commitController.GetTopCommitAuthors)
-	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
-	router.GET("/api/v1/commits/since", commitController.GetCommitsByDateSince)
-	router.GET("/api/v1/repositories/:repo", repoController.AddRepoName)
 }
 
 func configureAppComponents() {
