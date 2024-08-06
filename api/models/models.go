@@ -15,10 +15,9 @@ type Commit struct {
 	Message     string
 	Author      *Author
 	Repo        *GithubRepository
-	RepoID      uint
+	RepoID      uint `gorm:"index:idx_repo_commits"`
 	CommittedAt time.Time
-
-	URL string
+	URL         string
 }
 
 type Author struct {

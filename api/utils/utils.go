@@ -19,7 +19,12 @@ var (
 	SINCE               = "since"
 	EMPTY_STRING        = ""
 	ACCEPT_HEADER_VALUE = "application/vnd.github+json"
+	BASE_URL            string
 )
+
+func init() {
+	BASE_URL = os.Getenv("GITHUB_API_BASE_URL")
+}
 
 func ExtractParamFromRequest(paramName string, ctx *gin.Context) (uint64, error) {
 	return strconv.ParseUint(ctx.Query(paramName), 10, 64)
@@ -36,7 +41,7 @@ func GetTimeFrom(date string) (*time.Time, error) {
 }
 
 func GetCommitCount() string {
-	req, err := http.NewRequest(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), nil)
+	req, err := http.NewRequest(http.MethodGet, BASE_URL+"/commits", nil)
 	if err != nil {
 		log.Println("Error: ", err.Error())
 	}

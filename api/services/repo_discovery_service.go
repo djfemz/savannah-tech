@@ -14,7 +14,7 @@ type RepoDiscoveryService struct {
 var repoUrl string
 
 func NewRepoDiscoveryService(service *GithubRepositoryService) *RepoDiscoveryService {
-	repoUrl = os.Getenv("GITHUB_API_REPOSITORY_URL")
+	repoUrl = os.Getenv("GITHUB_API_BASE_URL")
 	return &RepoDiscoveryService{service}
 }
 
