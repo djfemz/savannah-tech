@@ -52,17 +52,21 @@ func main() {
 		log.Println("[WARN:]\t Repo name is empty, provide repository name to start pulling data")
 	}
 	router := gin.Default()
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.GET("/api/v1/commits/authors/top", commitController.GetTopCommitAuthors)
-	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
-	router.GET("/api/v1/commits/since", commitController.GetCommitsByDateSince)
-	router.GET("/api/v1/repositories/:repo", repoController.AddRepoName)
+	registerRoutes(router)
 	port := os.Getenv("SERVER_PORT")
 	log.Println("port: ", port)
 	err = router.Run(":" + port)
 	if err != nil {
 		log.Fatal("Failed to start server on port: ", port)
 	}
+}
+
+func registerRoutes(router *gin.Engine) {
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/api/v1/commits/authors/top", commitController.GetTopCommitAuthors)
+	router.GET("/api/v1/commits/:repo", commitController.GetCommitsForRepository)
+	router.GET("/api/v1/commits/since", commitController.GetCommitsByDateSince)
+	router.GET("/api/v1/repositories/:repo", repoController.AddRepoName)
 }
 
 func configureAppComponents() {
