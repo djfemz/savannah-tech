@@ -20,7 +20,6 @@ func TestFetchCommitData(t *testing.T) {
 	commitRepository.On("SaveAll", mock.Anything).Return(nil)
 	commitRepository.On("FindMostRecentCommit").Return(utils.LoadTestCommits()[0], nil)
 	commitRepository.On("CountCommits").Return(int64(3), nil)
-	githubMetaDataRepo.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
 	commitMonitorService := NewCommitMonitorService(NewCommitManager(NewCommitService(commitRepository),
 		NewRepoDiscoveryService(NewGithubRepoMetadataService(githubMetaDataRepository), logger), logger), logger)
 	httpmock.Activate()
@@ -29,6 +28,7 @@ func TestFetchCommitData(t *testing.T) {
 		res, err := httpmock.NewJsonResponse(http.StatusOK, utils.LoadTestGithubCommitData())
 		return res, err
 	})
+	githubMetaDataRepo.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
 	data, err := commitMonitorService.FetchCommitData()
 	time.Sleep(5 * time.Second)
 	assert.Nil(t, err)
