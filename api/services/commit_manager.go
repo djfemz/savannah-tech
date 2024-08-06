@@ -52,7 +52,7 @@ func (commitManager *CommitManager) fetchAllCommits(githubCommitResponses *[]dto
 	counter, _ := commitManager.CommitService.repository.CountCommits()
 	counter = counter / int64(MAX_RECORDS_PER_PAGE)
 
-	repository, _ := commitManager.FindByName(repoName)
+	repository, _ := commitManager.GithubAuxiliaryRepository.FindByName(repoName)
 
 	totalCommitCount, _ = strconv.Atoi(utils.GetCommitCount())
 	url := fmt.Sprintf("%s%s", os.Getenv("GITHUB_API_BASE_URL"), COMMITS_ENDPOINT)

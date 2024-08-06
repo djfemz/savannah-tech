@@ -29,7 +29,7 @@ func TestFetchCommitDataByTime(t *testing.T) {
 	repoMetaDataRepository.On("FindByName", mock.Anything).Return(utils.GetRepoMetaData(), nil)
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
-	httpmock.RegisterResponder(http.MethodGet, os.Getenv("GITHUB_API_COMMIT_URL"), func(request *http.Request) (*http.Response, error) {
+	httpmock.RegisterResponder(http.MethodGet, os.Getenv("GITHUB_API_BASE_URL")+COMMITS_ENDPOINT, func(request *http.Request) (*http.Response, error) {
 		res, err := httpmock.NewJsonResponse(http.StatusOK, response)
 		return res, err
 	})
