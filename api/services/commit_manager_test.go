@@ -20,7 +20,7 @@ func TestFetchCommitDataByTime(t *testing.T) {
 	commitRepository := new(mocks.CommitRepository)
 	repoMetaDataRepository := new(mocks.GithubAuxiliaryRepository)
 	var commitManager = NewCommitManager(NewCommitService(commitRepository),
-		NewRepoDiscoveryService(NewGithubRepoMetadataService(repoMetaDataRepository)))
+		NewRepoDiscoveryService(NewGithubRepoMetadataService(repoMetaDataRepository), logger), logger)
 	var expected *[]dtos.GitHubCommitResponse
 	testTime, _ := utils.GetTimeFrom(os.Getenv("FETCH_DATE_SINCE"))
 	response := utils.GetByDate(*testTime)
