@@ -1,4 +1,4 @@
-package appErrors
+package app_errors
 
 const (
 	COMMIT_NOT_FOUND      = "requested commit not found"

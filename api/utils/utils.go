@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/djfemz/savannahTechTask/api/appErrors"
+	"github.com/djfemz/savannahTechTask/api/app-errors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -30,7 +30,7 @@ func GetTimeFrom(date string) (*time.Time, error) {
 	isoFormattedTime, err := time.Parse(os.Getenv("ISO_TIME_FORMAT"), date)
 	if err != nil {
 		log.Println("CreatedAt in wrong format: ", date)
-		return nil, appErrors.NewTimeFormatError()
+		return nil, app_errors.NewTimeFormatError()
 	}
 	return &isoFormattedTime, nil
 }

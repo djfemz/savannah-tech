@@ -11,12 +11,15 @@ type RepoDiscoveryService struct {
 	*GithubRepositoryService
 }
 
+var repoUrl string
+
 func NewRepoDiscoveryService(service *GithubRepositoryService) *RepoDiscoveryService {
+	repoUrl = os.Getenv("GITHUB_API_REPOSITORY_URL")
 	return &RepoDiscoveryService{service}
 }
 
 func (repoDiscoveryService *RepoDiscoveryService) FetchRepoMetaData(errorChannel chan<- any) (githubRepository *dtos.GithubRepositoryResponse, err error) {
-	resp, err := getData(os.Getenv("GITHUB_API_REPOSITORY_URL"), 0, nil)
+	resp, err := getData(repoUrl, 0, nil)
 	if err != nil {
 		log.Println("[Error:]\t", err)
 		errorChannel <- err

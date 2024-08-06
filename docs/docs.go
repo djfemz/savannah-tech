@@ -89,19 +89,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.authorsNotFound"
+                            "$ref": "#/definitions/app-errors.authorsNotFound"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.authorsNotFound"
+                            "$ref": "#/definitions/app-errors.authorsNotFound"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.authorsNotFound"
+                            "$ref": "#/definitions/app-errors.authorsNotFound"
                         }
                     }
                 }
@@ -139,19 +139,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.commitNotFound"
+                            "$ref": "#/definitions/app-errors.commitNotFound"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.commitNotFound"
+                            "$ref": "#/definitions/app-errors.commitNotFound"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.commitNotFound"
+                            "$ref": "#/definitions/app-errors.commitNotFound"
                         }
                     }
                 }
@@ -189,19 +189,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.commitNotFound"
+                            "$ref": "#/definitions/app-errors.commitNotFound"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.commitNotFound"
+                            "$ref": "#/definitions/app-errors.commitNotFound"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/appErrors.commitNotFound"
+                            "$ref": "#/definitions/app-errors.commitNotFound"
                         }
                     }
                 }
@@ -209,10 +209,10 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "appErrors.authorsNotFound": {
+        "app-errors.authorsNotFound": {
             "type": "object"
         },
-        "appErrors.commitNotFound": {
+        "app-errors.commitNotFound": {
             "type": "object"
         },
         "dtos.AuthorResponse": {

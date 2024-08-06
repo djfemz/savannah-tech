@@ -15,11 +15,18 @@ import (
 	"github.com/djfemz/savannahTechTask/api/mappers"
 )
 
+var authToken string
+
+func init() {
+
+}
+
 type CommitMonitorService struct {
 	*CommitManager
 }
 
 func NewCommitMonitorService(commitManager *CommitManager) *CommitMonitorService {
+	authToken = os.Getenv("AUTH_TOKEN")
 	return &CommitMonitorService{
 		commitManager,
 	}
@@ -61,7 +68,7 @@ func addParamsTo(req *http.Request, page int, start *time.Time) {
 }
 
 func addHeadersTo(req *http.Request) {
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("AUTH_TOKEN")))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", authToken))
 	req.Header.Add("Accept", utils.ACCEPT_HEADER_VALUE)
 }
 
@@ -71,7 +78,6 @@ func (commitMonitorService *CommitMonitorService) StartJob() {
 }
 
 func (commitMonitorService *CommitMonitorService) fetch() {
-	repoName := os.Getenv("REPO_NAME")
 	repository, _ := commitMonitorService.FindByName(repoName)
 	data, err := commitMonitorService.FetchCommitData()
 	if err != nil {

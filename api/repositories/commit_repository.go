@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/djfemz/savannahTechTask/api/models"
@@ -83,9 +82,12 @@ func (appCommitRepository *AppCommitRepository) SaveAll(commits []*models.Commit
 
 func (appCommitRepository *AppCommitRepository) FindTopCommitAuthors(size int) ([]*models.Author, error) {
 	var authors []*models.Author
-	limit := strconv.Itoa(size)
-	sql := "SELECT email, username, count(*) as commits from authors GROUP BY email, username ORDER BY count(*) DESC LIMIT " + limit
-	if err := appCommitRepository.Raw(sql).Limit(size).Find(&authors).Error; err != nil {
+	if err := appCommitRepository.Table("authors").
+		Select("email, username, COUNT(*) as commits").
+		Group("email, username").
+		Order("commits DESC").
+		Limit(size).
+		Find(&authors).Error; err != nil {
 		return nil, err
 	}
 	return authors, nil

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	dtos "github.com/djfemz/savannahTechTask/api/dtos/responses"
 	"github.com/djfemz/savannahTechTask/api/services"
 	"github.com/gin-gonic/gin"
@@ -17,13 +16,20 @@ type RepoController struct {
 	*services.CommitMonitorService
 }
 
+var repoName string
 var doneChannel chan bool
 var errorChannel chan any
 var commitManagerDoneChannel chan bool
 
+func init() {
+
+}
+
 func NewRepoController(repoDiscoveryService *services.RepoDiscoveryService,
+
 	commitManager *services.CommitManager,
 	commitMonitorService *services.CommitMonitorService) *RepoController {
+	repoName = os.Getenv("REPO_NAME")
 	return &RepoController{
 		repoDiscoveryService,
 		commitManager,
@@ -60,7 +66,7 @@ func (repoController *RepoController) PullData() {
 	doneChannel = make(chan bool)
 	errorChannel = make(chan any)
 	commitManagerDoneChannel = make(chan bool)
-	isExistingRepository, err := repoController.ExistsByName(os.Getenv("REPO_NAME"))
+	isExistingRepository, err := repoController.ExistsByName(repoName)
 	if err != nil {
 		log.Println("[ERROR: ]\tFailed to determine repo existence", err)
 	}
@@ -72,12 +78,7 @@ func (repoController *RepoController) PullData() {
 			monitorRepoForChanges(job, repoController)
 			job.Start()
 		}
-	} else {
-		fmt.Println("commit monitor task ")
-		monitorRepoForChanges(job, repoController)
-		job.Start()
 	}
-
 }
 
 func monitorRepoForChanges(job *cron.Cron, controller *RepoController) {
@@ -94,11 +95,11 @@ func monitorRepoForChanges(job *cron.Cron, controller *RepoController) {
 }
 
 func fetchFromRepo(controller *RepoController) {
-	go controller.RepoDiscoveryService.StartJob(doneChannel, errorChannel)
+	controller.RepoDiscoveryService.StartJob(doneChannel, errorChannel)
 	select {
 	case status := <-doneChannel:
 		log.Println("[INFO:]\tfinished fetching repository meta data", status)
-		go controller.CommitManager.StartJob(&commitManagerDoneChannel)
+		controller.CommitManager.StartJob(&commitManagerDoneChannel)
 		break
 	case errr := <-errorChannel:
 		log.Println("[ERROR:]\tfailed to fetch repository metadata: ", errr)

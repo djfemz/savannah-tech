@@ -19,7 +19,7 @@ import (
 var err error
 
 func init() {
-	err = godotenv.Load(".env.example")
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading env file: ", err)
 	}
@@ -44,8 +44,9 @@ var commitMonitorService *services.CommitMonitorService
 // @BasePath /api/v1
 func main() {
 	configureAppComponents()
-	isRepositoryNameAbsent := strings.TrimSpace(os.Getenv("REPO_NAME")) == utils.EMPTY_STRING
-	if isRepositoryNameAbsent {
+	isGithubCredentialValid := strings.TrimSpace(os.Getenv("REPO_NAME")) != utils.EMPTY_STRING &&
+		strings.TrimSpace(os.Getenv("REPO_OWNER")) != utils.EMPTY_STRING
+	if isGithubCredentialValid {
 		log.Println("[WARN:]\t Repo name is empty, provide repository name to start pulling data")
 	} else {
 		repoController.PullData()

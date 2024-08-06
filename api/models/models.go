@@ -10,7 +10,7 @@ import (
 type Commit struct {
 	ID uint `gorm:"primaryKey"`
 	*gorm.Model
-	RepoName    string
+	RepoName    string `gorm:"index"`
 	CommitHash  string `gorm:"unique"`
 	Message     string
 	Author      *Author

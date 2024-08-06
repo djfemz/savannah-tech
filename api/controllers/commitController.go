@@ -23,9 +23,9 @@ func NewCommitController(commitService *services.CommitService) *CommitControlle
 // @Produce      json
 // @Param        size   query   int  true  "Number of Authors"
 // @Success      200  {object}  dtos.AuthorResponse
-// @Failure      400  {object}  appErrors.authorsNotFound
-// @Failure      404  {object}  appErrors.authorsNotFound
-// @Failure      500  {object}  appErrors.authorsNotFound
+// @Failure      400  {object}  app-errors.authorsNotFound
+// @Failure      404  {object}  app-errors.authorsNotFound
+// @Failure      500  {object}  app-errors.authorsNotFound
 // @Router       /commits/authors/top [get]
 func (commitController *CommitController) GetTopCommitAuthors(ctx *gin.Context) {
 	size, _ := utils.ExtractParamFromRequest(utils.SIZE, ctx)
@@ -45,9 +45,9 @@ func (commitController *CommitController) GetTopCommitAuthors(ctx *gin.Context) 
 // @Produce      json
 // @Param        repo   path    string  true  "Repository Name"
 // @Success      200  {object}  dtos.CommitResponse
-// @Failure      400  {object}  appErrors.commitNotFound
-// @Failure      404  {object}  appErrors.commitNotFound
-// @Failure      500  {object}  appErrors.commitNotFound
+// @Failure      400  {object}  app-errors.commitNotFound
+// @Failure      404  {object}  app-errors.commitNotFound
+// @Failure      500  {object}  app-errors.commitNotFound
 // @Router       /commits/{repo} [get]
 func (commitController *CommitController) GetCommitsForRepository(ctx *gin.Context) {
 	repo := ctx.Param(utils.REPO)
@@ -67,9 +67,9 @@ func (commitController *CommitController) GetCommitsForRepository(ctx *gin.Conte
 // @Produce      json
 // @Param        since   query    string  true  "date"
 // @Success      200  {object}  dtos.CommitResponse
-// @Failure      400  {object}  appErrors.commitNotFound
-// @Failure      404  {object}  appErrors.commitNotFound
-// @Failure      500  {object}  appErrors.commitNotFound
+// @Failure      400  {object}  app-errors.commitNotFound
+// @Failure      404  {object}  app-errors.commitNotFound
+// @Failure      500  {object}  app-errors.commitNotFound
 // @Router       /commits/since [get]
 func (commitController *CommitController) GetCommitsByDateSince(ctx *gin.Context) {
 	since := ctx.Query(utils.SINCE)
