@@ -32,7 +32,7 @@ func init() {
 
 }
 
-func NewCommitManager(commitService *CommitService, repoDiscovery *RepoDiscoveryService) *CommitManager {
+func NewCommitManager(commitService *CommitService, repoDiscovery *RepoDiscoveryService, logger *log.Logger) *CommitManager {
 	repoName = os.Getenv("REPO_NAME")
 	return &CommitManager{commitService, repoDiscovery}
 }

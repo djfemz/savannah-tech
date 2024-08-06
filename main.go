@@ -16,6 +16,7 @@ import (
 )
 
 var err error
+var logger *log.Logger
 
 func init() {
 	err = godotenv.Load(".env.example")
@@ -65,6 +66,7 @@ func validateGithubCredentials() {
 }
 
 func configureAppComponents() {
+	logger = log.New(os.Stdout, "[INFO]:", log.Ldate)
 	db, err = repositories.ConnectToDatabase()
 	if err != nil {
 		log.Fatal("Failed to connect to Datasource")
@@ -73,9 +75,9 @@ func configureAppComponents() {
 	githubAuxRepo := repositories.NewGithubAuxiliaryRepository(db)
 	commitService = services.NewCommitService(commitRepository)
 	githubAuxService := services.NewGithubRepoMetadataService(githubAuxRepo)
-	repoDiscoveryService = services.NewRepoDiscoveryService(githubAuxService)
-	commitManager = services.NewCommitManager(commitService, repoDiscoveryService)
-	commitMonitorService = services.NewCommitMonitorService(commitManager)
+	repoDiscoveryService = services.NewRepoDiscoveryService(githubAuxService, logger)
+	commitManager = services.NewCommitManager(commitService, repoDiscoveryService, logger)
+	commitMonitorService = services.NewCommitMonitorService(commitManager, logger)
 	commitController = controllers.NewCommitController(commitService)
 	repoController = controllers.NewRepoController(repoDiscoveryService, commitManager, commitMonitorService)
 }

@@ -23,12 +23,14 @@ func init() {
 
 type CommitMonitorService struct {
 	*CommitManager
+	*log.Logger
 }
 
-func NewCommitMonitorService(commitManager *CommitManager) *CommitMonitorService {
+func NewCommitMonitorService(commitManager *CommitManager, logger *log.Logger) *CommitMonitorService {
 	authToken = os.Getenv("AUTH_TOKEN")
 	return &CommitMonitorService{
 		commitManager,
+		logger,
 	}
 }
 
@@ -81,14 +83,14 @@ func (commitMonitorService *CommitMonitorService) pullCommitDataFromGithub() {
 	repository, _ := commitMonitorService.FindByName(repoName)
 	data, err := commitMonitorService.FetchCommitData()
 	if err != nil {
-		log.Println("[ERROR:]\tError fetching commits: ", err)
+		commitMonitorService.Println("\tError fetching commits: ", err)
 	}
 
 	if data != nil && len(*data) > 0 {
 		commits := mappers.MapToCommits(data, repository)
 		err = commitMonitorService.repository.SaveAll(commits)
 		if err != nil {
-			log.Println("[ERROR:]\terror saving commits: ", err)
+			commitMonitorService.Println("\terror saving commits: ", err)
 		}
 	}
 }
@@ -100,7 +102,7 @@ func extractDataInto[t any](resp *http.Response, into *t) (*t, error) {
 
 	err := json.NewDecoder(resp.Body).Decode(&into)
 	if err != nil {
-		log.Println("[ERROR:]\tError reading response: ", err)
+		log.Println("Error reading response: ", err)
 		return nil, err
 	}
 	return into, nil
